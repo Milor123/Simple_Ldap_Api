@@ -32,7 +32,7 @@ class Myldap(object):
         self.__password = __password
         self.port = port
         self.domain = to_domain(dn)
-        self.generaldn = dn
+        self.attrib_toshow = []
         self.__connect()
 
     def __connect(self):
@@ -43,14 +43,14 @@ class Myldap(object):
         except:
             print('Error al conectar a ldap')
 
-    def ldapsearch(self, attributeandsearch, **kwargs):
-
+    def ldapsearch(self, attrib_forsearch, attrib_toshow, **kwargs):
+        self.attrib_toshow = attrib_toshow
         try:
             self.conn.protocol_version = ldap.VERSION3
             self.conn.set_option(ldap.OPT_REFERRALS,0)
 
             # the code that shown below is waiting for domain or dn such as
-            # domain='www.ITFIP.EDU.CO', domain="dc='ITFIP', dc='LOCAL'"
+            # domain='www.ITFIP.LOCAL', or domain="dc='ITFIP',dc='LOCAL'"
             # added to that, if domain isn't specified, then take default converted domain in the constructor
             # with the to_domain() function
             if 'domain' in kwargs:
@@ -64,12 +64,16 @@ class Myldap(object):
 
             result = self.conn.search_s(self.domain,
                                         ldap.SCOPE_SUBTREE,
-                                        attributeandsearch)
+                                        attrib_forsearch)
 
-            results = [entry for dn,entry in result if isinstance(entry,dict)]
-            if not results:  # if is empty return 0 because not found the search... similar that, "if results == []"
-                return 0
-            return results[0]
+            self.resultssearch = [entry for dn,entry in result if isinstance(entry, dict)]
+            if not self.resultssearch:  # if is empty return 0 because not found the search...
+                # similar that, "if results == []"
+                self.resultssearch = 0
+            else:
+                self.resultssearch = self.resultssearch[0]
+                return self.getsearch()
+            # return results[0]
         finally:
             pass
             # self.conn.unbind(), this here can close the connection of ldap
@@ -88,26 +92,29 @@ class Myldap(object):
         self.conn.add_s('cn=replica, cn=Users, dc=owner,dc=local', ldif)
         #self.conn.unbind()
 
-    def getsearch(self, ldapsearch, attributetosearch):
+    def getsearch(self):
 
-        ldapsearch
-        if ldapsearch != 0:
+        if self.resultssearch != 0:
             foundit = []
             # first of all take dict keys, which will be compared with attributes specified in (attributetosearch),
             # then add it to new list till loop end
-            for key, data in ldapsearch.iteritems():
-                for atrib in attributetosearch:
+            for key, data in self.resultssearch.iteritems():
+                for atrib in self.attrib_toshow:
                     if key.lower() == atrib.lower():  # convert to lower for insensitive case
                         foundit.append([key, data])
+            print foundit
             return foundit
         else:
-            print 'Lo sentimos lo que has buscado no ha sido encontrado'
+            return 'Lo sentimos lo que has buscado no ha sido encontrado'
+
+    def show(self):
+        print self
 
 
-Nop = Myldap('192.168.0.23', 'cn=administrador,cn=Users,dc=owner,dc=local', 'Ownerpassword')
-consulta = Nop.ldapsearch(search_by_mail('Koj@hot.co'))
+Nop = Myldap('192.168.0.23', 'cn=administradortest,cn=Users,dc=owner,dc=local','123456789Xx')
+Nop.ldapsearch(search_by_mail('a@a.a'), show_name())
 
-print Nop.getsearch(consulta, show_sensitive_data())
+
 
 #Nop.ldapadd()
 #Nop = myldap('192.168.10.28', 'cn=Administrador,cn=Users,dc=ITFIPSALAS,dc=LOCAL', 'Itfip2015')
