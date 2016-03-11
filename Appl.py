@@ -18,8 +18,8 @@ class Myldap(object):
     on top of that, allow data query, and other functions such as, add and modify data, but are still experimentals.
 
     Attributes:
-        conn (instance): instanced connection of ldap object.
-        domain (str): DN converted to domain with helpful method.
+        | conn (instance): instanced connection of ldap object.
+        | domain (str): DN converted to domain with helpful method.
     """
 
     def __init__(self, ip, dn, _password, port='389'):
@@ -27,21 +27,21 @@ class Myldap(object):
         In the constructor define the sensitive data for Active Directory connection, then call to _connect().
 
         Args:
-            ip (str): ip address.
-            dn (str): Distinguished Name.
-            _password (str): User password.
-            port (str): connection port.
+            | ip (str): ip address.
+            | dn (str): Distinguished Name.
+            | _password (str): User password.
+            | port (str): connection port.
 
         Attributes:
-            ip (str): ip address of domain server.
-            dn (str): is a sequence of relative distinguished names (RDN) connected by commas, thus must contain
+            | ip (str): ip address of domain server.
+            | dn (str): is a sequence of relative distinguished names (RDN) connected by commas, thus must contain
                 administrator user locate and Domain.
-            _password (str): you must be specify a adminstrator user of Domain in the Active Directory.
-            port (str): Active Directory Domain Services Port.
+            | _password (str): you must be specify a adminstrator user of Domain in the Active Directory.
+            | port (str): Active Directory Domain Services Port.
 
         .. seealso::
-            https://msdn.microsoft.com/en-us/library/windows/desktop/aa366101%28v=vs.85%29.aspx
-            https://technet.microsoft.com/en-us/library/dd772723%28v=ws.10%29.aspx
+            | https://msdn.microsoft.com/en-us/library/windows/desktop/aa366101%28v=vs.85%29.aspx
+            | https://technet.microsoft.com/en-us/library/dd772723%28v=ws.10%29.aspx
 
         Example:
             if the connection is valid this should print your user and domain.
@@ -83,15 +83,15 @@ class Myldap(object):
         that then is filtered to taste by user.
 
         Args:
-            attrib_forsearch (str): Attribute with value for search all data.
-            attrib_toshow (list of str): Filter data according to attributes.
-            **kwargs: Domain if need be changed (optional).
+            | attrib_forsearch (str): Attribute with value for search all data.
+            | attrib_toshow (list of str): Filter data according to attributes.
+            | **kwargs: Domain if need be changed (optional).
 
         Attributes:
-            attrib_forsearch (str): Its composed by two importants parts.
+            | attrib_forsearch (str): Its composed by two importants parts.
                 firts, the attribute of domain for try search, secondly, the value for search all data.
-            attrib_toshow (list): Use attributes with comma separate what you need get.
-            **kwargs: It is used for change default domain of search,
+            | attrib_toshow (list): Use attributes with comma separate what you need get.
+            | **kwargs: It is used for change default domain of search,
                 you can use url as domain or distinguishedName, use domain='dn_or_url'.
 
         .. warning:: in case of use **kwargs as domain with DN, no use spaces, be sure to separate only by commas
@@ -106,8 +106,8 @@ class Myldap(object):
         .. seealso:: https://msdn.microsoft.com/en-us/library/windows/desktop/ms675090(v=vs.85).aspx
 
         Example:
-            should use authentified object of myldap and then try search:
-            without help modules.
+            | should use authentified object of myldap and then try search:
+            | without help modules.
 
             >>> auth_object.ldapsearch('mail=mailfor@search.com', ['distinguishedName'])
             [['distinguishedName', 'CN=name_user,CN=Users,DC=owner,DC=local']]
@@ -168,18 +168,18 @@ class Myldap(object):
         Take the dictionary result of ldapsearch, and make reorganization in a list.
 
         Args:
-            _resultssearch (dict): Iterable data.
-            attrib_toshow (list of str): Filter data according to attributes.
+            | _resultssearch (dict): Iterable data.
+            | attrib_toshow (list of str): Filter data according to attributes.
 
         Attributes:
-            _resultssearch (dict): It contains human readable data about search.
-            attrib_toshow (list): Use attributes with comma separate what you need get.
+            | _resultssearch (dict): It contains human readable data about search.
+            | attrib_toshow (list): Use attributes with comma separate what you need get.
 
         Returns:
-            _foundit(list): Filtered list of dict of _resultssearch.
+            | _foundit(list): Filtered list of dict of _resultssearch.
 
         Raises:
-            LookupError: if didn't find something as a result of _resultssearch.
+            | LookupError: if didn't find something as a result of _resultssearch.
 
         """
 
