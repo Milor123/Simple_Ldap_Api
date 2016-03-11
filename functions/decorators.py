@@ -7,6 +7,9 @@ Decorators
 
 # *types refers to args of the decorator,therefore are the type of variables
 def requiere(*types):
+    """
+    This decorator, evaluates that the types pass in a method to be correct
+    """
 
     # realfn refers to itself class,
     def realfn(func):

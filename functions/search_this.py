@@ -2,6 +2,7 @@
 ++++++++++++++++++++++++++++++++++++
 Search Functions
 ++++++++++++++++++++++++++++++++++++
+Use this in ldapsearch Function
 """
 
 

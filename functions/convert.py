@@ -5,7 +5,7 @@
 Convert and Verify Functions
 ---------------------------------------------------------
 
-.. warning:: Before to use our convert module, you should know that is a distinguished name (dn) and your structure
+.. warning:: You should know that is a distinguished name (dn) and your structure
 
 .. note:: see https://msdn.microsoft.com/en-us/library/aa366101(v=vs.85).aspx
 
@@ -16,7 +16,6 @@ you must know there aren't necessary for use the api, but can help you
 
 def to_domain(dn):
     """
-
     to_domain(dn) -> String
     this function convert dn with only domainComponent to domain
     """
@@ -33,7 +32,6 @@ def to_domain(dn):
 
 def to_distinguished_name(domain_url):
     """
-
     to_distinguished_name(domain_url) -> String
     this function convert domain to dn with only domainComponent
     """
@@ -48,7 +46,6 @@ def to_distinguished_name(domain_url):
 
 def is_domain_dn(dn):
     """
-
     is_domain_dn(dn) -> boolean
     this function verify if you dn is a dn with only domainComponent
     """
@@ -63,7 +60,6 @@ def is_domain_dn(dn):
 
 def is_domain_url(domain_url):
     """
-
     is_domain_url(domain_url) -> boolean
     this function verify if is url
     """
