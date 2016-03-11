@@ -48,6 +48,7 @@ class Myldap(object):
 
             >>> Myldap('192.168.0.23', 'cn=administradortest,cn=Users,dc=owner,dc=local','mypassword')
             u:OWNER\administradortest
+            
 
         """
         self.ip = ip
