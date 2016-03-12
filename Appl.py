@@ -43,7 +43,7 @@ class Myldap(object):
             | https://msdn.microsoft.com/en-us/library/windows/desktop/aa366101%28v=vs.85%29.aspx
             | https://technet.microsoft.com/en-us/library/dd772723%28v=ws.10%29.aspx
 
-        Example:
+        Examples:
             if the connection is valid this should print your user and domain.
 
             >>> Myldap('192.168.0.23', 'cn=administradortest,cn=Users,dc=owner,dc=local','mypassword')
@@ -106,7 +106,7 @@ class Myldap(object):
         .. note:: search_this and show_this module could help you
         .. seealso:: https://msdn.microsoft.com/en-us/library/windows/desktop/ms675090(v=vs.85).aspx
 
-        Example:
+        Examples:
             | should use authentified object of myldap and then try search:
             | without help modules.
 
@@ -149,17 +149,42 @@ class Myldap(object):
             pass
             # self.conn.unbind(), this here can close the connection of ldap
 
-    def ldapadd(self, domain=''):
+    def ldapadd(self, objectdn, attrs_dict):
+        """
+        Args:
+            | objectdn (str): DistinguishedName for new object
+            | attrs_dict: Dicctionary with info object
 
-        attrs = {}
-        attrs['objectclass'] = ['top', 'organizationalRole', 'simpleSecurityObject']
-        attrs['cn'] = 'replica'
-        attrs['userPassword'] = 'aDifferentSecret'
-        attrs['description'] = 'User object for replication using slurpd'
+        Raises:
+            | ValueError: Object or user already exist
+            | NameError: From my point of view, usually this is brought about of different information,
+                the which specified in the dictionary and objectdn, to put in other way,
+                if you cn in the DN isn't same than cn in the dictionary, the error occurs
 
-        ldif = modlist.addModlist(attrs)
-        print attrs
-        self.conn.add_s('cn=replica, cn=Users, dc=owner,dc=local', ldif)
+        Returns:
+            str: Messagge with congratulations
+
+        Examples:
+            | Create a dict with data object:
+
+        >>> attrs = {}
+        >>> attrs['objectclass'] = ['top', 'organizationalRole', 'simpleSecurityObject']
+        >>> attrs['cn'] = 'mynewusername'
+        >>> attrs['userPassword'] = 'aDifferentSecret'
+        >>> attrs['description'] = 'User object for replication using slurpd'
+        >>> auth_object.ldapadd('cn=mynewusername,cn=Users,dc=owner,dc=local', attrs)
+
+        """
+        ldif = modlist.addModlist(attrs_dict)  # convert dict with special parse of ldap
+        
+        try:
+            self.conn.add_s(objectdn, ldif)
+            return str('El objeto ha sido creado correactamente')
+        except ldap.ALREADY_EXISTS:
+            raise ValueError ('El objeto ya existe')
+        except ldap.INVALID_DN_SYNTAX:
+            raise NameError('Puede que ayas espeficiado un objeto diferente en el diccionario que en el DN')
+
         # self.conn.unbind()
 
     def getsearch(self, _resultssearch, attrib_toshow):
@@ -198,7 +223,14 @@ class Myldap(object):
             raise LookupError('Lo sentimos lo que has buscado no ha sido encontrado')
 
 
-#Nop = Myldap('192.168.0.23', 'cn=administradortest,cn=Users,dc=owner,dc=local', '123456789Xx')
+Nop = Myldap('192.168.0.23', 'cn=administradortest,cn=Users,dc=owner,dc=local', '123456789Xx')
+attrs = {}
+attrs['objectclass'] = ['top', 'organizationalRole', 'simpleSecurityObject']
+attrs['cn'] = 'mynewusername'
+attrs['userPassword'] = 'aDifferentSecret'
+attrs['description'] = 'User object for replication using slurpd'
+Nop.ldapadd('cn=mynewusername,cn=Users,dc=owner,dc=local', attrs)
+
 #Nop.ldapsearch(search_by_mail('a@a.a'), show_dn())
 
 
