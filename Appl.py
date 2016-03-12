@@ -201,9 +201,38 @@ class Myldap(object):
         # self.conn.unbind()
 
     def ldapmodify(self, objectdn, attrs_new):
+        """
+        No use with attributes of multiple data as memberof, this is experimental
+
+        Args:
+            | objectdn (str): DistinguishedName of object to modify
+            | attrs_new (dict): Acive Directory Attributes dicctionary with value need for modify
+
+        Examples:
+            go to change current telephoneNumber.
+            >>>auth_object.ldapmodify('cn=administratortest,cn=Users,dc=owner,dc=local', {'telephoneNumber': '515336'})
+
+            | In this moment us number should be 515336.
+            | could check this with:
+            >>>auth_object.ldapsearch(search_by_mail('administradortest@owner.local'), show_telephone_number())
+            [['telephoneNumber' ['515336']]]
+
+
+            | if you need add multiple data be use comma separate in the value, one instance could be:
+            | Warning, This is experimental code
+            >>>auth_object.ldapmodify('cn=administratortest...', [{'memberOf': 'Group_of_blabla','blablabla','More_blabla'}])
+
+        """
+
         attrs_old = {}
         for key, value in attrs_new.iteritems():
-            attrs_old[key] = 'x'  # this is the old value with a random value as x, for replace all
+            if isinstance(value, list):
+                temporallist = []
+                for x in value:
+                    temporallist.append('x')
+                attrs_old[key] = temporallist
+            else:
+                attrs_old[key] = 'x'  # this is the old value with a random value as x, for replace all
 
         ldif = modlist.modifyModlist(attrs_old, attrs_new)
         self.conn.modify_s(objectdn, ldif)
@@ -244,7 +273,7 @@ class Myldap(object):
         else:
             raise LookupError('Lo sentimos lo que has buscado no ha sido encontrado')
 
-
+#[['memberOf', ['CN=Propietarios del creador de directivas de grupo,CN=Users,DC=owner,DC=local', 'CN=Admins. del dominio,CN=Users,DC=owner,DC=local', 'CN=Administradores de empresas,CN=Users,DC=owner,DC=local', 'CN=Administradores de esquema,CN=Users,DC=owner,DC=local', 'CN=Administradores,CN=Builtin,DC=owner,DC=local']]]
 Nop = Myldap('192.168.0.23', 'cn=administradortest,cn=Users,dc=owner,dc=local', '123456789Xx')
-Nop.ldapmodify('cn=sruser,cn=Users,dc=owner,dc=local', {'telephoneNumber': '18181'})
+Nop.ldapmodify('cn=sruser,cn=Users,dc=owner,dc=local', {'memberOf': ['CN=Propietarios del creador de directivas de grupo,CN=Users,DC=owner,DC=local', 'CN=Admins. del dominio,CN=Users,DC=owner,DC=local', 'CN=Administradores de empresas,CN=Users,DC=owner,DC=local', 'CN=Administradores de esquema,CN=Users,DC=owner,DC=local', 'CN=Administradores,CN=Builtin,DC=owner,DC=local']})
 #Nop.ldapsearch(search_by_mail('administradortest@owner.local'), show_member_of())

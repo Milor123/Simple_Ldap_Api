@@ -33,3 +33,8 @@ def show_sensitive_data():
 def show_member_of():
     """show_member_of() -> list """
     return ['memberOf']
+
+
+def show_telephone_number():
+    """show_telephone_number() -> list """
+    return ['telephoneNumber']
