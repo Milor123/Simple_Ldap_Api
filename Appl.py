@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import ldap
 import ldap.modlist as modlist
+import time
 from functions.convert import *
 from functions.show_this import *
 from functions.search_this import *
@@ -71,6 +72,7 @@ class Myldap(object):
         try:
 
             self.conn = ldap.initialize("ldap://"+self.ip+":"+self.port)
+            time.sleep(0.5)
             self.conn.simple_bind(self.dn, self._password)  # simple bind changed
             print self.conn.whoami_s()
         except:
@@ -111,12 +113,22 @@ class Myldap(object):
             | without help modules.
 
             >>> auth_object.ldapsearch('mail=mailfor@search.com', ['distinguishedName'])
-            [['distinguishedName', 'CN=name_user,CN=Users,DC=owner,DC=local']]
+            [['distinguishedName', ['CN=name_user,CN=Users...']]]
 
             with show_this and search_this functions.
 
             >>> auth_object.ldapsearch(search_by_mail('mailfor@search.com'), show_dn())
-            [['distinguishedName', 'CN=name_user,CN=Users,DC=owner,DC=local']]
+            [['distinguishedName', ['CN=name_user,CN=Users...]]]
+
+            Incidentally we must not forget, this can found multiple values, to give an illustration of what I mean
+            try get memberOf data in admintratortest:
+
+            >>> auth_object.ldapsearch(search_by_mail('administradortest@owner.local'), show_member_of())
+            [['memberOf', ['CN=blabla ,CN=Users,DC=owner...', 'CN=Admins. blabla,CN=Users,DC=owner...', 'CN= blablabla,DC=owner,DC=local']]]
+
+        Example attributes:
+            auth_object(Instance): refers to authenfied instace with administrator data
+
 
         """
 
@@ -138,6 +150,7 @@ class Myldap(object):
                                         attrib_forsearch)
 
             _resultssearch = [entry for dn, entry in result if isinstance(entry, dict)]
+            print _resultssearch
             if not _resultssearch:  # if is empty return 0 because not found the search...
                 # similar that, "if results == []"
                 _resultssearch = 0
@@ -153,7 +166,7 @@ class Myldap(object):
         """
         Args:
             | objectdn (str): DistinguishedName for new object
-            | attrs_dict: Dicctionary with info object
+            | attrs_dict: Dictionary with info object
 
         Raises:
             | ValueError: Object or user already exist
@@ -162,7 +175,7 @@ class Myldap(object):
                 if you cn in the DN isn't same than cn in the dictionary, the error occurs
 
         Returns:
-            str: Messagge with congratulations
+            str: Message with congratulations
 
         Examples:
             | Create a dict with data object:
@@ -180,12 +193,21 @@ class Myldap(object):
         try:
             self.conn.add_s(objectdn, ldif)
             return str('El objeto ha sido creado correactamente')
-        except ldap.ALREADY_EXISTS:
-            raise ValueError ('El objeto ya existe')
-        except ldap.INVALID_DN_SYNTAX:
-            raise NameError('Puede que ayas espeficiado un objeto diferente en el diccionario que en el DN')
+        except ldap.ALREADY_EXISTS as e:
+            raise ValueError('El objeto ya existe ::', e)
+        except ldap.INVALID_DN_SYNTAX as e:
+            raise NameError('Puede que hayas espeficiado un objeto diferente en el diccionario que en el DN ::', e)
 
         # self.conn.unbind()
+
+    def ldapmodify(self, objectdn, attrs_new):
+        attrs_old = {}
+        for key, value in attrs_new.iteritems():
+            attrs_old[key] = 'x'  # this is the old value with a random value as x, for replace all
+
+        ldif = modlist.modifyModlist(attrs_old, attrs_new)
+        self.conn.modify_s(objectdn, ldif)
+
 
     def getsearch(self, _resultssearch, attrib_toshow):
         """
@@ -216,7 +238,7 @@ class Myldap(object):
             for key, data in _resultssearch.iteritems():
                 for atrib in attrib_toshow:
                     if key.lower() == atrib.lower():  # convert to lower for insensitive case
-                        _foundit.append([key, data[0]])  # data[0] because need delete unnecessary []
+                        _foundit.append([key, data])  # Note: not use data[0] because could have more information
             print _foundit
             return _foundit
         else:
@@ -224,22 +246,5 @@ class Myldap(object):
 
 
 Nop = Myldap('192.168.0.23', 'cn=administradortest,cn=Users,dc=owner,dc=local', '123456789Xx')
-attrs = {}
-attrs['objectclass'] = ['top', 'organizationalRole', 'simpleSecurityObject']
-attrs['cn'] = 'mynewusername'
-attrs['userPassword'] = 'aDifferentSecret'
-attrs['description'] = 'User object for replication using slurpd'
-Nop.ldapadd('cn=mynewusername,cn=Users,dc=owner,dc=local', attrs)
-
-#Nop.ldapsearch(search_by_mail('a@a.a'), show_dn())
-
-
-
-#Nop.ldapadd()
-#Nop = myldap('192.168.10.28', 'cn=Administrador,cn=Users,dc=ITFIPSALAS,dc=LOCAL', 'Itfip2015')
-#print('fin')
-#consulta = Nop.ldapsearch(search_by_name('admin'),domain='WWW.ITFIPSALAS.LOCAL')
-#print Nop.getsearch(consulta,show_mail())
-
-
-#Nop.ldapadd()
+Nop.ldapmodify('cn=sruser,cn=Users,dc=owner,dc=local', {'telephoneNumber': '18181'})
+#Nop.ldapsearch(search_by_mail('administradortest@owner.local'), show_member_of())
