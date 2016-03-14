@@ -42,7 +42,8 @@ class Myldap(object):
 
             .. seealso::
                 | https://msdn.microsoft.com/en-us/library/windows/desktop/aa366101%28v=vs.85%29.aspx
-                | https://technet.microsoft.com/en-us/library/dd772723%28v=ws.10%29.aspx
+
+                https://technet.microsoft.com/en-us/library/dd772723%28v=ws.10%29.aspx
 
         Examples:
             if the connection is valid this should print your user and domain.
@@ -148,7 +149,6 @@ class Myldap(object):
                                         attrib_forsearch)
 
             _resultssearch = [entry for dn, entry in result if isinstance(entry, dict)]
-            print _resultssearch
             if not _resultssearch:  # if is empty return 0 because not found the search...
                 # similar that, "if results == []"
                 _resultssearch = 0
@@ -173,9 +173,8 @@ class Myldap(object):
             | NameError: From my point of view, usually this is brought about of different information,
                 the which specified in the dictionary and objectdn, to put in other way,
                 if you cn in the DN isn't same than cn in the dictionary, the error occurs
-
         Returns:
-            str: Message with congratulations
+            Spanish message that show, that the object has been created correctly
 
         Examples:
             | Create a dict with data object:
@@ -186,12 +185,13 @@ class Myldap(object):
             >>> attrs['userPassword'] = 'Secret'
             >>> attrs['description'] = 'I am new user xDDD'
             >>> auth_object.ldapadd('cn=userman,cn=Users,dc=owner,dc=local', attrs)
+            The object has been created correctly
         """
         ldif = modlist.addModlist(attrs_dict)  # convert dict with special parse of ldap
         
         try:
             self.conn.add_s(objectdn, ldif)
-            return str('El objeto ha sido creado correactamente')
+            return 'El objeto ha sido creado correctamente'
         except ldap.ALREADY_EXISTS as e:
             raise ValueError('El objeto ya existe ::', e)
         except ldap.INVALID_DN_SYNTAX as e:
@@ -240,7 +240,6 @@ class Myldap(object):
         print 'lel', ldif
         self.conn.modify_s(objectdn, ldif)
 
-
     def getsearch(self, _resultssearch, attrib_toshow):
         """
         getsearch(self, _resultssearch, attrib_toshow) -> list
@@ -271,15 +270,94 @@ class Myldap(object):
                 for atrib in attrib_toshow:
                     if key.lower() == atrib.lower():  # convert to lower for insensitive case
                         _foundit.append([key, data])  # Note: not use data[0] because could have more information
-            print _foundit
             return _foundit
         else:
             raise LookupError('Lo sentimos lo que has buscado no ha sido encontrado')
 
+    def ldapcompare_fast(self, dn, attr, value):
+        """
 
-Nop = Myldap('192.168.0.17', 'cn=administradortest,cn=Users,dc=owner,dc=local', '123456789Xx')
+        Args:
+            | dn (str): Object DN.
+            | attr (str): Attribute to compare.
+            | value (str): Value for compare.
+
+        Returns:
+            | True if the values are same.
+            | False if the values no match.
+
+        References:
+            https://www.packtpub.com/books/content/configuring-and-securing-python-ldap-applications-part-2
+
+        Examples:
+            | if the xD user have phoneNumver value = 11257.
+            >>> auth_object.ldapcompare_fast('cn=xD,cn=Users,dc=owner,dc=local','telephoneNumber', '5559971')
+            False
+
+            >>> auth_object.ldapcompare_fast('cn=xD,cn=Users,dc=owner,dc=local','telephoneNumber', '11257')
+            True
+
+        .. warning::
+            * Don't use with attributes of multiple values as memberOf, could throw false positive.
+            * No use spaces in DN, be sure to separate only by comma.
+
+
+        """
+
+        try:
+            self.conn.result(self.conn.compare(dn, attr, value))
+        except ldap.COMPARE_TRUE:
+            return True
+        except ldap.COMPARE_FALSE:
+            return False
+
+    def ldapcompar_advance(self, dn, attrvalue, dntocompare, attrvaluecompare):
+        """
+        This method allow compare two attribute values with DN.
+
+        Args:
+            dn (str): Firts object DN to compare.
+            attrvalue (str): Firts attribute to compare.
+            dntocompare (str): Second object DN to compare.
+            attrvaluecompare (str): Second attribute to compare.
+
+        Returns:
+            | Both are empty' if the values of Both attributes are empty.
+            | True if the values are same.
+            | False if the values no match.
+
+        .. warning::
+                * Don't use with attributes of multiple values as memberOf, could throw false positive.
+                * No use spaces in DN, be sure to separate only by comma.
+
+        Examples:
+            | Phones numbers compare with different users.
+            >>> auth_object.compar_advance('cn=xD,cn=Users,dc=owner,dc=local','telephoneNumber',
+            ...                            'cn=administradortest,cn=Users,dc=owner,dc=local','telephoneNumber')
+            False
+
+            | will use the same user. should be true or throw Both are empty if haven't data.
+            >>> auth_object.compar_advance('cn=xD,cn=Users,dc=owner,dc=local','telephoneNumber',
+            ...                            'cn=xD,cn=Users,dc=owner,dc=local','telephoneNumber')
+            True
+
+        """
+
+        # use [attr] because need a list
+        firt_value = self.ldapsearch(search_by_dn(dn), [attrvalue])
+        second_value = self.ldapsearch(search_by_dn(dntocompare), [attrvaluecompare])
+        if not firt_value and not second_value:
+            return 'Both are empty'
+
+        if second_value:
+            # [0][1][0], the firts is for enter in attribute, [1] for select value, [0] for enter in value
+            second_value = second_value[0][1][0]
+        else:
+            second_value = ''
+        return self.ldapcompare_fast(dn, attrvalue, second_value)
+
+
+
+#Nop = Myldap('192.168.0.17', 'cn=administradortest,cn=Users,dc=owner,dc=local', '123456789Xx')
 #Nop.ldapmodify('cn=xD,cn=Users,dc=owner,dc=local', {'memberOf':'CN=Administradores,CN=Builtin,DC=owner,DC=local'})
-
-
-
-#Nop.ldapsearch(search_by_mail('administradortest@owner.local'), show_member_of())
+#print Nop.ldapsearch(search_by_dn('cn=administradortest,cn=Users,dc=owner,dc=local'), show_telephone_number())

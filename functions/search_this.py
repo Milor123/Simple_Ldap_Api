@@ -18,3 +18,8 @@ def search_by_number(number):
 def search_by_name(name):
     """search_by_name(name) -> String """
     return 'name='+name
+
+
+def search_by_dn(dn):
+    """search_by_dn(dn) -> String """
+    return 'distinguishedName='+dn

@@ -27,7 +27,8 @@ def modify_dn(dn):
 
 def modify_sensitive_data(useprincipalname, userpassword):
     """modify_sensitive_data() -> dict """
-    return {'userPrincipalName': useprincipalname, 'userPassword': userpassword}
+    return {'userPrincipalName': useprincipalname,
+            'userPassword': userpassword}
 
 
 def modify_member_of(memberof):
