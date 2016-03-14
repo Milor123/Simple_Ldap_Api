@@ -38,3 +38,7 @@ def show_member_of():
 def show_telephone_number():
     """show_telephone_number() -> list """
     return ['telephoneNumber']
+
+def show_password():
+    """show_password() -> list """
+    return ['userPassword']

@@ -50,8 +50,6 @@ class Myldap(object):
 
             >>> Myldap('192.168.0.23', 'cn=administradortest,cn=Users,dc=owner,dc=local','mypassword')
             u:OWNER\administradortest
-            
-
         """
         self.ip = ip
         self.dn = dn
@@ -59,6 +57,7 @@ class Myldap(object):
         self.port = port
         self.domain = to_domain(dn)
         self.conn = object
+        self.base = dn
         self._connect()
 
     def _connect(self):
@@ -70,14 +69,22 @@ class Myldap(object):
 
         """
 
-        try:
+        ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
+        ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, 0)
+        ldap.set_option(ldap.OPT_REFERRALS, 0)
+        ldap.set_option(ldap.OPT_PROTOCOL_VERSION, 3)
+        self.conn = ldap.initialize("ldap://"+self.ip+":"+self.port)
 
-            self.conn = ldap.initialize("ldap://"+self.ip+":"+self.port)
-            time.sleep(0.5)
-            self.conn.simple_bind(self.dn, self._password)  # simple bind changed
-            print self.conn.whoami_s()
-        except:
-            raise Exception('Error al conectar con el servidor')
+        self.conn.set_option(ldap.OPT_REFERRALS,0)
+        self.conn.set_option(ldap.OPT_PROTOCOL_VERSION,3)
+        self.conn.set_option(ldap.OPT_X_TLS,ldap.OPT_X_TLS_DEMAND)
+        self.conn.set_option(ldap.OPT_X_TLS_DEMAND,True)
+        self.conn.set_option(ldap.OPT_DEBUG_LEVEL,255)
+
+        time.sleep(0.5)
+        self.conn.simple_bind(self.dn, self._password)  # simple bind changed
+        print self.conn.whoami_s()
+        raise Exception('Error al conectar con el servidor')
 
     def ldapsearch(self, attrib_forsearch, attrib_toshow, **kwargs):
         """
@@ -127,8 +134,6 @@ class Myldap(object):
 
         Example attributes:
             auth_object(Instance): refers to authenfied instace with administrator data
-
-
         """
 
         try:
@@ -148,6 +153,7 @@ class Myldap(object):
                                         ldap.SCOPE_SUBTREE,
                                         attrib_forsearch)
 
+            print result
             _resultssearch = [entry for dn, entry in result if isinstance(entry, dict)]
             if not _resultssearch:  # if is empty return 0 because not found the search...
                 # similar that, "if results == []"
@@ -197,8 +203,6 @@ class Myldap(object):
         except ldap.INVALID_DN_SYNTAX as e:
             raise NameError('Puede que hayas espeficiado un objeto diferente en el diccionario que en el DN ::', e)
 
-        # self.conn.unbind()
-
     def ldapmodify(self, objectdn, attrs_new):
         """
         This function can modify a object in Active Directory, taking a object and stipulate new data for attributes
@@ -233,10 +237,7 @@ class Myldap(object):
             else:
                 attrs_old[key] = 'x'  # this is the old value with a random value as x, for replace all
 
-        print attrs_old
-        test= {'memberOf': 'CN=Propietarios del creador de directivas de grupo,CN=Users,DC=owner,DC=local'}
-
-        ldif = modlist.addModlist(test, attrs_new)
+        ldif = modlist.addModlist(attrs_old, attrs_new)
         print 'lel', ldif
         self.conn.modify_s(objectdn, ldif)
 
@@ -276,6 +277,7 @@ class Myldap(object):
 
     def ldapcompare_fast(self, dn, attr, value):
         """
+        ldapcompare_fast(self, dn, attr, value) -> boolean
 
         Args:
             | dn (str): Object DN.
@@ -300,8 +302,6 @@ class Myldap(object):
         .. warning::
             * Don't use with attributes of multiple values as memberOf, could throw false positive.
             * No use spaces in DN, be sure to separate only by comma.
-
-
         """
 
         try:
@@ -313,6 +313,8 @@ class Myldap(object):
 
     def ldapcompar_advance(self, dn, attrvalue, dntocompare, attrvaluecompare):
         """
+        ldapcompar_advance(self, dn, attrvalue, dntocompare, attrvaluecompare) -> boolean or string
+
         This method allow compare two attribute values with DN.
 
         Args:
@@ -340,7 +342,6 @@ class Myldap(object):
             >>> auth_object.compar_advance('cn=xD,cn=Users,dc=owner,dc=local','telephoneNumber',
             ...                            'cn=xD,cn=Users,dc=owner,dc=local','telephoneNumber')
             True
-
         """
 
         # use [attr] because need a list
@@ -356,8 +357,22 @@ class Myldap(object):
             second_value = ''
         return self.ldapcompare_fast(dn, attrvalue, second_value)
 
+    def changePassword(self, user_dn, old_password, new_password):
+
+        # Reset Password
+        unicode_pass = unicode('\"' + str(new_password) + '\"', 'iso-8859-1')
+        password_value = unicode_pass.encode('utf-16-le')
+        add_pass = [(ldap.MOD_REPLACE, 'unicodePwd', [password_value])]
+
+        self.conn.modify_s(user_dn, add_pass)
+
+        # Its nice to the server to disconnect and free resources when done
+        #.unbind_s()
 
 
-#Nop = Myldap('192.168.0.17', 'cn=administradortest,cn=Users,dc=owner,dc=local', '123456789Xx')
+
+
+Nop = Myldap('192.168.0.17', 'cn=administradortest,cn=Users,dc=owner,dc=local', '123456789Xx')
 #Nop.ldapmodify('cn=xD,cn=Users,dc=owner,dc=local', {'memberOf':'CN=Administradores,CN=Builtin,DC=owner,DC=local'})
-#print Nop.ldapsearch(search_by_dn('cn=administradortest,cn=Users,dc=owner,dc=local'), show_telephone_number())
+#Nop.changePassword('cn=administradortest,cn=Users,dc=owner,dc=local','Mat@123123', '123456789Xx')
+print Nop.ldapsearch(search_by_dn('cn=administradortest,cn=Users,dc=owner,dc=local'), show_password())

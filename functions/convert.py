@@ -1,16 +1,9 @@
 # /usr/bin/env python 2.7
 """
-
----------------------------------------------------------
 Convert and Verify Functions
----------------------------------------------------------
-
-.. warning:: You should know that is a distinguished name (dn) and your structure
-
-.. note:: see https://msdn.microsoft.com/en-us/library/aa366101(v=vs.85).aspx
-
-All functions named bellow has been utility in the coding of the api
-you must know there aren't necessary for use the api, but can help you
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. note:: You should know about distinguished name (dn) and your structure
+.. seealso:: https://msdn.microsoft.com/en-us/library/aa366101(v=vs.85).aspx
 """
 
 
