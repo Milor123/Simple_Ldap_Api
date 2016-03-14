@@ -40,9 +40,9 @@ class Myldap(object):
             | _password (str): you must be specify a adminstrator user of Domain in the Active Directory.
             | port (str): Active Directory Domain Services Port.
 
-        .. seealso::
-            | https://msdn.microsoft.com/en-us/library/windows/desktop/aa366101%28v=vs.85%29.aspx
-            | https://technet.microsoft.com/en-us/library/dd772723%28v=ws.10%29.aspx
+            .. seealso::
+                | https://msdn.microsoft.com/en-us/library/windows/desktop/aa366101%28v=vs.85%29.aspx
+                | https://technet.microsoft.com/en-us/library/dd772723%28v=ws.10%29.aspx
 
         Examples:
             if the connection is valid this should print your user and domain.
@@ -97,31 +97,29 @@ class Myldap(object):
             | **kwargs: It is used for change default domain of search,
                 you can use url as domain or distinguishedName, use domain='dn_or_url'.
 
-        .. warning:: in case of use **kwargs as domain with DN, no use spaces, be sure to separate only by commas
-
+            .. warning:: in case of use **kwargs as domain with DN, no use spaces, be sure to separate only by commas
+            .. note:: search_this and show_this module could help you
+            .. seealso:: https://msdn.microsoft.com/en-us/library/windows/desktop/ms675090(v=vs.85).aspx
         Returns:
             list from getsearch().
 
         Raises:
             SyntaxError: In case that you kwarg domain is corrupted.
 
-        .. note:: search_this and show_this module could help you
-        .. seealso:: https://msdn.microsoft.com/en-us/library/windows/desktop/ms675090(v=vs.85).aspx
-
         Examples:
-            | should use authentified object of myldap and then try search:
-            | without help modules.
+            | Should use authentified object of myldap and then try search:
+            | Without help modules:
 
             >>> auth_object.ldapsearch('mail=mailfor@search.com', ['distinguishedName'])
             [['distinguishedName', ['CN=name_user,CN=Users...']]]
 
-            with show_this and search_this functions.
+            With show_this and search_this functions.
 
             >>> auth_object.ldapsearch(search_by_mail('mailfor@search.com'), show_dn())
             [['distinguishedName', ['CN=name_user,CN=Users...]]]
 
-            Incidentally we must not forget, this can found multiple values, to give an illustration of what I mean
-            try get memberOf data in admintratortest:
+            Incidentally we must not forget, this can found multiple values, to give an illustration of what I mean,
+            will try get memberOf data in admintratortest:
 
             >>> auth_object.ldapsearch(search_by_mail('administradortest@owner.local'), show_member_of())
             [['memberOf', ['CN=blabla ,CN=Users,DC=owner...', 'CN=Admins. blabla,CN=Users,DC=owner...', 'CN= blablabla,DC=owner,DC=local']]]
@@ -164,6 +162,8 @@ class Myldap(object):
 
     def ldapadd(self, objectdn, attrs_dict):
         """
+        This function can add a object in Active Directory, such that need a. DN and the attributes object
+
         Args:
             | objectdn (str): DistinguishedName for new object
             | attrs_dict: Dictionary with info object
@@ -180,13 +180,12 @@ class Myldap(object):
         Examples:
             | Create a dict with data object:
 
-        >>> attrs = {}
-        >>> attrs['objectclass'] = ['top', 'organizationalRole', 'simpleSecurityObject']
-        >>> attrs['cn'] = 'mynewusername'
-        >>> attrs['userPassword'] = 'aDifferentSecret'
-        >>> attrs['description'] = 'User object for replication using slurpd'
-        >>> auth_object.ldapadd('cn=mynewusername,cn=Users,dc=owner,dc=local', attrs)
-
+            >>> attrs = {}
+            >>> attrs['objectclass'] = ['top', 'organizationalPerson', 'Person', 'user']
+            >>> attrs['cn'] = 'userman'
+            >>> attrs['userPassword'] = 'Secret'
+            >>> attrs['description'] = 'I am new user xDDD'
+            >>> auth_object.ldapadd('cn=userman,cn=Users,dc=owner,dc=local', attrs)
         """
         ldif = modlist.addModlist(attrs_dict)  # convert dict with special parse of ldap
         
@@ -202,7 +201,7 @@ class Myldap(object):
 
     def ldapmodify(self, objectdn, attrs_new):
         """
-        No use with attributes of multiple data as memberof, this is experimental
+        This function can modify a object in Active Directory, taking a object and stipulate new data for attributes
 
         Args:
             | objectdn (str): DistinguishedName of object to modify
@@ -218,11 +217,10 @@ class Myldap(object):
             >>> auth_object.ldapsearch(search_by_mail('administradortest@owner.local'), show_telephone_number())
             [['telephoneNumber' ['515336']]]
 
-
-            | if you need add multiple data be use comma separate in the value, one instance could be:
-            | Warning, This is experimental code.
-            >>> auth_object.ldapmodify('cn=administratortest...', [{'memberOf': 'Group_of_blabla','blablabla','More_blabla'}])
-
+            .. Warning::
+                | Modify attributes with multiple data is experimental code, dont use it
+                | if you need add multiple data, be use comma separate in a list for the value, one instance could be:
+                >>> auth_object.ldapmodify('cn=administratortest...', {'memberOf': ['Group_of_blabla','blablabla','More_blabla']})
         """
 
         attrs_old = {}
@@ -235,7 +233,11 @@ class Myldap(object):
             else:
                 attrs_old[key] = 'x'  # this is the old value with a random value as x, for replace all
 
-        ldif = modlist.modifyModlist(attrs_old, attrs_new)
+        print attrs_old
+        test= {'memberOf': 'CN=Propietarios del creador de directivas de grupo,CN=Users,DC=owner,DC=local'}
+
+        ldif = modlist.addModlist(test, attrs_new)
+        print 'lel', ldif
         self.conn.modify_s(objectdn, ldif)
 
 
@@ -274,6 +276,10 @@ class Myldap(object):
         else:
             raise LookupError('Lo sentimos lo que has buscado no ha sido encontrado')
 
-#Nop = Myldap('192.168.0.23', 'cn=administradortest,cn=Users,dc=owner,dc=local', '123456789Xx')
-#Nop.ldapmodify('cn=sruser,cn=Users,dc=owner,dc=local', {'memberOf': ['CN=Propietarios del creador de directivas de grupo,CN=Users,DC=owner,DC=local', 'CN=Admins. del dominio,CN=Users,DC=owner,DC=local', 'CN=Administradores de empresas,CN=Users,DC=owner,DC=local', 'CN=Administradores de esquema,CN=Users,DC=owner,DC=local', 'CN=Administradores,CN=Builtin,DC=owner,DC=local']})
+
+Nop = Myldap('192.168.0.17', 'cn=administradortest,cn=Users,dc=owner,dc=local', '123456789Xx')
+#Nop.ldapmodify('cn=xD,cn=Users,dc=owner,dc=local', {'memberOf':'CN=Administradores,CN=Builtin,DC=owner,DC=local'})
+
+
+
 #Nop.ldapsearch(search_by_mail('administradortest@owner.local'), show_member_of())
