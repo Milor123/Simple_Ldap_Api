@@ -3,10 +3,19 @@
 import ldap
 import ldap.modlist as modlist
 import time
-from functions.convert import *
-from functions.show_this import *
-from functions.search_this import *
-from functions.decorators import *
+from functions.convert import is_domain_dn, is_domain_url,\
+                              to_domain, to_distinguished_name
+
+from functions.show_this import show_profile, show_mail,\
+                                show_name, show_password,\
+                                show_telephone_number, show_member_of,\
+                                show_sensitive_data, show_dn
+
+from functions.search_this import search_by_number, search_by_mail,\
+                                  search_by_dn, search_by_dn,\
+                                  search_by_name
+
+from functions.decorators import requiere
 
 
 class Myldap(object):
@@ -16,7 +25,7 @@ class Myldap(object):
     centralization of data through ldap protocol.
 
     This module establishes a connection to active directory, of Windows Server, by means of a user of domain,
-    on top of that, allow data query, and other functions such as, add and modify data, but are still experimentals.
+    on top of that, allow data query, and other functions such as, add, modify, compare data
 
     Attributes:
         | conn (instance): instanced connection of ldap object.
@@ -80,11 +89,12 @@ class Myldap(object):
         self.conn.set_option(ldap.OPT_X_TLS,ldap.OPT_X_TLS_DEMAND)
         self.conn.set_option(ldap.OPT_X_TLS_DEMAND,True)
         self.conn.set_option(ldap.OPT_DEBUG_LEVEL,255)
-
-        time.sleep(0.5)
-        self.conn.simple_bind(self.dn, self._password)  # simple bind changed
-        print self.conn.whoami_s()
-        raise Exception('Error al conectar con el servidor')
+        try:
+            time.sleep(0.5)
+            self.conn.simple_bind(self.dn, self._password)  # simple bind changed
+            print self.conn.whoami_s()
+        except:
+            raise Exception('Error al conectar con el servidor')
 
     def ldapsearch(self, attrib_forsearch, attrib_toshow, **kwargs):
         """
@@ -139,7 +149,6 @@ class Myldap(object):
         try:
             self.conn.protocol_version = ldap.VERSION3
             self.conn.set_option(ldap.OPT_REFERRALS, 0)
-
             if 'domain' in kwargs:
                 if is_domain_dn(kwargs['domain']):  # verify if is a valid domain
                     self.domain = kwargs['domain']
@@ -194,7 +203,7 @@ class Myldap(object):
             The object has been created correctly
         """
         ldif = modlist.addModlist(attrs_dict)  # convert dict with special parse of ldap
-        
+
         try:
             self.conn.add_s(objectdn, ldif)
             return 'El objeto ha sido creado correctamente'
@@ -213,7 +222,7 @@ class Myldap(object):
 
         Examples:
             go to change current telephoneNumber.
-            
+
             >>> auth_object.ldapmodify('cn=administratortest,cn=Users,dc=owner,dc=local', {'telephoneNumber': '515336'})
 
             | In this moment us number should be 515336.
@@ -372,7 +381,7 @@ class Myldap(object):
 
 
 
-Nop = Myldap('192.168.0.17', 'cn=administradortest,cn=Users,dc=owner,dc=local', '123456789Xx')
+#Nop = Myldap('192.168.0.17', 'cn=administradortest,cn=Users,dc=owner,dc=local', '123456789Xx')
 #Nop.ldapmodify('cn=xD,cn=Users,dc=owner,dc=local', {'memberOf':'CN=Administradores,CN=Builtin,DC=owner,DC=local'})
 #Nop.changePassword('cn=administradortest,cn=Users,dc=owner,dc=local','Mat@123123', '123456789Xx')
-print Nop.ldapsearch(search_by_dn('cn=administradortest,cn=Users,dc=owner,dc=local'), show_password())
+#print Nop.ldapsearch(search_by_dn('cn=administradortest,cn=Users,dc=owner,dc=local'), show_dn())
