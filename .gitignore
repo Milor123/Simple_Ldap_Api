@@ -10,7 +10,7 @@ __pycache__/
 ._idea/
 ._idea
 ._idea/*
-
+.ropeproject/
 #security
 *.json
 *.sqlite3
