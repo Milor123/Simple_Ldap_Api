@@ -7,10 +7,10 @@ if [ ! -d "Simple_Ldap_Api_gh-pages" ]; then
     git checkout gh-pages
     cd ..
 fi
-cp -r $PWD/_build/html/* $PWD/simple_ldap_api_gh-pages/
+cp -r _build/html/* simple_ldap_api_gh-pages/
 cd simple_ldap_api_gh-pages
 git push add .
-git commit
+git commit -m 'no commit'
 git push origin gh-pages
 cd ..
 #rm -r simple_ldap_api_gh-pages
