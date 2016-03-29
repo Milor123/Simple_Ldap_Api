@@ -24,7 +24,7 @@ class Myldap(object):
     "Instituto Tolimense de Educacion Superior" (ITFIP). Our objective is to ease
     centralization of data through ldap protocol.
 
-    This module establishes a connection to active directory, of Windows Server, by means of a user of domain,
+    This module establishes a connection to active directory, of Windows Server, by means of an user of domain,
     on top of that, allow data query, and other functions such as, add, modify, compare data
 
     Attributes:
@@ -100,7 +100,7 @@ class Myldap(object):
         """
         ldapsearch(self, attrib_forsearch, attrib_toshow, **kwargs) -> list
 
-        This functions allow to get data list of an object in the active directory, based on a search of a information
+        This functions allow to get data list of an object in the active directory, based on a search of an information
         that then is filtered according to user's needs.
 
         Args:

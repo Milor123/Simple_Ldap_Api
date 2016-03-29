@@ -1,6 +1,6 @@
 make html;
 if [ ! -d "Simple_Ldap_Api_gh-pages" ]; then
-    git clone git@github.com:Milor123/Simple_Ldap_Api.git
+    git clone git@bitbucket.org:Milor123/simple_ldap_api.git 
     mv Simple_Ldap_Api Simple_Ldap_Api_gh-pages
     cd Simple_Ldap_Api_gh-pages
     git checkout gh-pages
