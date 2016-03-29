@@ -10,7 +10,7 @@ fi
 cp -r $PWD/_build/html/* $PWD/simple_ldap_api_gh-pages/
 cd simple_ldap_api_gh-pages
 git push add .
-git commit -a
+git commit
 git push origin gh-pages
 cd ..
-rm -r simple_ldap_api_gh-pages
+#rm -r simple_ldap_api_gh-pages
