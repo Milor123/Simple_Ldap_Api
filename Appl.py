@@ -235,11 +235,7 @@ class Myldap(object):
                 attrs_old[key] = temporallist
             else:
                 attrs_old[key] = '10'  # this is the old value with a random value as x, for replace all
-        print attrs_old
-        print attrs_new
-        print objectdn
         ldif = modlist.modifyModlist(attrs_old, attrs_new)
-        print 'lel', ldif
         self.conn.modify_s(objectdn, ldif)
 
     def getsearch(self, _resultssearch, attrib_toshow):
@@ -349,7 +345,7 @@ class Myldap(object):
         firt_value = self.ldapsearch(search_by_dn(dn), [attrvalue])
         second_value = self.ldapsearch(search_by_dn(dntocompare), [attrvaluecompare])
         if not firt_value and not second_value:
-            return 'Both are empty your'
+            return NameError('Both are empty your')
 
         if second_value:
             # [0][1][0], the firts is for enter in attribute, [1] for select value, [0] for enter in value
@@ -359,7 +355,6 @@ class Myldap(object):
         return self.ldapcompare_fast(dn, attrvalue, second_value)
 
     def changePassword(self, user_dn, old_password, new_password):
-
         # Reset Password
         unicode_pass = unicode('\"' + str(new_password) + '\"', 'iso-8859-1')
         password_value = unicode_pass.encode('utf-16-le')
@@ -373,8 +368,8 @@ class Myldap(object):
 
 
 
-Nop = Myldap('ownerpc.no-ip.org', 'cn=administradortest,cn=Users,dc=owner,dc=local', '123456789Xx')
-print Nop.ldapsearch(search_by_mail('sruser@owner.local'), show_telephone_number())
-Nop.ldapmodify('cn=sruser,cn=Users,dc=owner,dc=local', {'telephoneNumber':'9917'})
+# Nop = Myldap('ownerpc.no-ip.org', 'cn=administradortest,cn=Users,dc=owner,dc=local', '123456789Xx')
+# print Nop.ldapsearch(search_by_mail('sruser@owner.local'), show_telephone_number())
+# Nop.ldapmodify('cn=sruser,cn=Users,dc=owner,dc=local', {'telephoneNumber':'9917'})
 #Nop.changePassword('cn=administradortest,cn=Users,dc=owner,dc=local','Mat@123123', '123456789Xx')
 #print Nop.ldapsearch(search_by_dn('cn=administradortest,cn=Users,dc=owner,dc=local'), show_dn())
