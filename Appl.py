@@ -1,7 +1,7 @@
 # /usr/bin/env python 2.7
 # -*- coding: utf-8 -*-
 import ldap
-import ldap.modlist as modlist
+from ldap import modlist
 import time
 from functions.convert import is_domain_dn, is_domain_url,\
                               to_domain, to_distinguished_name
@@ -65,7 +65,6 @@ class Myldap(object):
         self._password = _password
         self.port = port
         self.domain = to_domain(dn)
-        self.conn = object
         self.base = dn
         self._connect()
 
@@ -78,17 +77,8 @@ class Myldap(object):
 
         """
 
-        ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
-        ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, 0)
-        ldap.set_option(ldap.OPT_REFERRALS, 0)
-        ldap.set_option(ldap.OPT_PROTOCOL_VERSION, 3)
         self.conn = ldap.initialize("ldap://"+self.ip+":"+self.port)
 
-        self.conn.set_option(ldap.OPT_REFERRALS,0)
-        self.conn.set_option(ldap.OPT_PROTOCOL_VERSION,3)
-        self.conn.set_option(ldap.OPT_X_TLS,ldap.OPT_X_TLS_DEMAND)
-        self.conn.set_option(ldap.OPT_X_TLS_DEMAND,True)
-        self.conn.set_option(ldap.OPT_DEBUG_LEVEL,255)
         try:
             time.sleep(0.5)
             self.conn.simple_bind(self.dn, self._password)  # simple bind changed
@@ -244,9 +234,11 @@ class Myldap(object):
                     temporallist.append('x')
                 attrs_old[key] = temporallist
             else:
-                attrs_old[key] = 'x'  # this is the old value with a random value as x, for replace all
-
-        ldif = modlist.addModlist(attrs_old, attrs_new)
+                attrs_old[key] = '10'  # this is the old value with a random value as x, for replace all
+        print attrs_old
+        print attrs_new
+        print objectdn
+        ldif = modlist.modifyModlist(attrs_old, attrs_new)
         print 'lel', ldif
         self.conn.modify_s(objectdn, ldif)
 
@@ -357,7 +349,7 @@ class Myldap(object):
         firt_value = self.ldapsearch(search_by_dn(dn), [attrvalue])
         second_value = self.ldapsearch(search_by_dn(dntocompare), [attrvaluecompare])
         if not firt_value and not second_value:
-            return 'Both are empty'your
+            return 'Both are empty your'
 
         if second_value:
             # [0][1][0], the firts is for enter in attribute, [1] for select value, [0] for enter in value
@@ -381,7 +373,8 @@ class Myldap(object):
 
 
 
-#Nop = Myldap('192.168.0.17', 'cn=administradortest,cn=Users,dc=owner,dc=local', '123456789Xx')
-#Nop.ldapmodify('cn=xD,cn=Users,dc=owner,dc=local', {'memberOf':'CN=Administradores,CN=Builtin,DC=owner,DC=local'})
+Nop = Myldap('ownerpc.no-ip.org', 'cn=administradortest,cn=Users,dc=owner,dc=local', '123456789Xx')
+print Nop.ldapsearch(search_by_mail('sruser@owner.local'), show_telephone_number())
+Nop.ldapmodify('cn=sruser,cn=Users,dc=owner,dc=local', {'telephoneNumber':'9917'})
 #Nop.changePassword('cn=administradortest,cn=Users,dc=owner,dc=local','Mat@123123', '123456789Xx')
 #print Nop.ldapsearch(search_by_dn('cn=administradortest,cn=Users,dc=owner,dc=local'), show_dn())
