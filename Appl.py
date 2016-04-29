@@ -1,7 +1,7 @@
 # /usr/bin/env python 2.7
 # -*- coding: utf-8 -*-
 import ldap
-import ldap.modlist as modlist
+from ldap import modlist
 import time
 from functions.convert import is_domain_dn, is_domain_url,\
                               to_domain, to_distinguished_name
@@ -20,11 +20,11 @@ from functions.decorators import requiere
 
 class Myldap(object):
     """
-    firts fo all, this module is specially created for active directory working of the university
-    "Instituto Tolimence de Educacion Superior" (ITFIP), where our objective is to ease
+    first of all, this module is specially created for active directory working of the university
+    "Instituto Tolimense de Educacion Superior" (ITFIP). Our objective is to ease
     centralization of data through ldap protocol.
 
-    This module establishes a connection to active directory, of Windows Server, by means of a user of domain,
+    This module establishes a connection to active directory, of Windows Server, by means of an user of domain,
     on top of that, allow data query, and other functions such as, add, modify, compare data
 
     Attributes:
@@ -46,7 +46,7 @@ class Myldap(object):
             | ip (str): ip address of domain server.
             | dn (str): is a sequence of relative distinguished names (RDN) connected by commas, thus must contain
                 administrator user locate and Domain.
-            | _password (str): you must be specify a adminstrator user of Domain in the Active Directory.
+            | _password (str): you must specify an adminstrator user of Domain in the Active Directory.
             | port (str): Active Directory Domain Services Port.
 
             .. seealso::
@@ -65,30 +65,20 @@ class Myldap(object):
         self._password = _password
         self.port = port
         self.domain = to_domain(dn)
-        self.conn = object
         self.base = dn
         self._connect()
 
     def _connect(self):
         """
-        This method will create a instanced object of ldap with authentified connection.
+        This method will create an instanced object of ldap with authentified connection.
 
         Raises:
-            Exception: Error in the authentication with server by something reason
+            Exception: Error in the authentication with server by some reason
 
         """
 
-        ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
-        ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, 0)
-        ldap.set_option(ldap.OPT_REFERRALS, 0)
-        ldap.set_option(ldap.OPT_PROTOCOL_VERSION, 3)
         self.conn = ldap.initialize("ldap://"+self.ip+":"+self.port)
 
-        self.conn.set_option(ldap.OPT_REFERRALS,0)
-        self.conn.set_option(ldap.OPT_PROTOCOL_VERSION,3)
-        self.conn.set_option(ldap.OPT_X_TLS,ldap.OPT_X_TLS_DEMAND)
-        self.conn.set_option(ldap.OPT_X_TLS_DEMAND,True)
-        self.conn.set_option(ldap.OPT_DEBUG_LEVEL,255)
         try:
             time.sleep(0.5)
             self.conn.simple_bind(self.dn, self._password)  # simple bind changed
@@ -100,8 +90,8 @@ class Myldap(object):
         """
         ldapsearch(self, attrib_forsearch, attrib_toshow, **kwargs) -> list
 
-        This functions allow get data list of a object in the active directory, based in a search of a information
-        that then is filtered to taste by user.
+        This functions allow to get data list of an object in the active directory, based on a search of an information
+        that then is filtered according to user's needs.
 
         Args:
             | attrib_forsearch (str): Attribute with value for search all data.
@@ -109,20 +99,20 @@ class Myldap(object):
             | **kwargs: Domain if need be changed (optional).
 
         Attributes:
-            | attrib_forsearch (str): Its composed by two importants parts.
-                firts, the attribute of domain for try search, secondly, the value for search all data.
-            | attrib_toshow (list): Use attributes with comma separate what you need get.
-            | **kwargs: It is used for change default domain of search,
+            | attrib_forsearch (str): It's composed by two importants parts.
+                firts, the attribute of domain for try search, secondly, the value for searching all the data.
+            | attrib_toshow (list): Use attributes with comma separate what you need to get.
+            | **kwargs: It is used for changing default domain of search,
                 you can use url as domain or distinguishedName, use domain='dn_or_url'.
 
-            .. warning:: in case of use **kwargs as domain with DN, no use spaces, be sure to separate only by commas
+            .. warning:: in case of use **kwargs as domain with DN, don't use spaces, be sure to separate only by commas
             .. note:: search_this and show_this module could help you
             .. seealso:: https://msdn.microsoft.com/en-us/library/windows/desktop/ms675090(v=vs.85).aspx
         Returns:
             list from getsearch().
 
         Raises:
-            SyntaxError: In case that you kwarg domain is corrupted.
+            SyntaxError: In case that your kwarg domain is corrupted.
 
         Examples:
             | Should use authentified object of myldap and then try search:
@@ -136,8 +126,8 @@ class Myldap(object):
             >>> auth_object.ldapsearch(search_by_mail('mailfor@search.com'), show_dn())
             [['distinguishedName', ['CN=name_user,CN=Users...]]]
 
-            Incidentally we must not forget, this can found multiple values, to give an illustration of what I mean,
-            will try get memberOf data in admintratortest:
+            Incidentally we must not forget, this can find multiple values, to give an illustration of what I mean,
+            will try to get a memberOf data in admintratortest:
 
             >>> auth_object.ldapsearch(search_by_mail('administradortest@owner.local'), show_member_of())
             [['memberOf', ['CN=blabla ,CN=Users,DC=owner...', 'CN=Admins. blabla,CN=Users,DC=owner...', 'CN= blablabla,DC=owner,DC=local']]]
@@ -164,7 +154,7 @@ class Myldap(object):
 
             print result
             _resultssearch = [entry for dn, entry in result if isinstance(entry, dict)]
-            if not _resultssearch:  # if is empty return 0 because not found the search...
+            if not _resultssearch:  # if it is empty return 0 because it did not find the search...
                 # similar that, "if results == []"
                 _resultssearch = 0
             else:
@@ -177,7 +167,7 @@ class Myldap(object):
 
     def ldapadd(self, objectdn, attrs_dict):
         """
-        This function can add a object in Active Directory, such that need a. DN and the attributes object
+        This function can add an object in Active Directory, which needs a DN and the attributes object
 
         Args:
             | objectdn (str): DistinguishedName for new object
@@ -186,10 +176,10 @@ class Myldap(object):
         Raises:
             | ValueError: Object or user already exist
             | NameError: From my point of view, usually this is brought about of different information,
-                the which specified in the dictionary and objectdn, to put in other way,
+                which is specified in the dictionary and objectdn, in other words,
                 if you cn in the DN isn't same than cn in the dictionary, the error occurs
         Returns:
-            Spanish message that show, that the object has been created correctly
+            Spanish message that shows, that the object has been created correctly
 
         Examples:
             | Create a dict with data object:
@@ -214,7 +204,7 @@ class Myldap(object):
 
     def ldapmodify(self, objectdn, attrs_new):
         """
-        This function can modify a object in Active Directory, taking a object and stipulate new data for attributes
+        This function can modify an object in Active Directory, taking an object and stipulate new data for attributes
 
         Args:
             | objectdn (str): DistinguishedName of object to modify
@@ -231,8 +221,8 @@ class Myldap(object):
             [['telephoneNumber' ['515336']]]
 
             .. Warning::
-                | Modify attributes with multiple data is experimental code, dont use it
-                | if you need add multiple data, be use comma separate in a list for the value, one instance could be:
+                | Modify attributes with multiple data are experimental code, don't use it
+                | if you need add multiple data, use comma to separate in a list for the value, one example could be:
                 >>> auth_object.ldapmodify('cn=administratortest...', {'memberOf': ['Group_of_blabla','blablabla','More_blabla']})
         """
 
@@ -244,10 +234,8 @@ class Myldap(object):
                     temporallist.append('x')
                 attrs_old[key] = temporallist
             else:
-                attrs_old[key] = 'x'  # this is the old value with a random value as x, for replace all
-
-        ldif = modlist.addModlist(attrs_old, attrs_new)
-        print 'lel', ldif
+                attrs_old[key] = '10'  # this is the old value with a random value as x, for replace all
+        ldif = modlist.modifyModlist(attrs_old, attrs_new)
         self.conn.modify_s(objectdn, ldif)
 
     def getsearch(self, _resultssearch, attrib_toshow):
@@ -262,13 +250,13 @@ class Myldap(object):
 
         Attributes:
             | _resultssearch (dict): It contains human readable data about search.
-            | attrib_toshow (list): Use attributes with comma separate what you need get.
+            | attrib_toshow (list): Use attributes with comma separate what you need to get.
 
         Returns:
             | _foundit(list): Filtered list of dict of _resultssearch.
 
         Raises:
-            | LookupError: if didn't find something as a result of _resultssearch.
+            | LookupError: if it didn't find something as a result of _resultssearch.
 
         """
 
@@ -310,7 +298,7 @@ class Myldap(object):
 
         .. warning::
             * Don't use with attributes of multiple values as memberOf, could throw false positive.
-            * No use spaces in DN, be sure to separate only by comma.
+            * Don't use spaces in DN, be sure to separate only by comma.
         """
 
         try:
@@ -324,7 +312,7 @@ class Myldap(object):
         """
         ldapcompar_advance(self, dn, attrvalue, dntocompare, attrvaluecompare) -> boolean or string
 
-        This method allow compare two attribute values with DN.
+        This method allows to compare two attribute values with DN.
 
         Args:
             dn (str): Firts object DN to compare.
@@ -339,7 +327,7 @@ class Myldap(object):
 
         .. warning::
                 * Don't use with attributes of multiple values as memberOf, could throw false positive.
-                * No use spaces in DN, be sure to separate only by comma.
+                * Don't use spaces in DN, be sure to separate only by comma.
 
         Examples:
             | Phones numbers compare with different users.
@@ -357,7 +345,7 @@ class Myldap(object):
         firt_value = self.ldapsearch(search_by_dn(dn), [attrvalue])
         second_value = self.ldapsearch(search_by_dn(dntocompare), [attrvaluecompare])
         if not firt_value and not second_value:
-            return 'Both are empty'
+            return NameError('Both are empty your')
 
         if second_value:
             # [0][1][0], the firts is for enter in attribute, [1] for select value, [0] for enter in value
@@ -367,7 +355,6 @@ class Myldap(object):
         return self.ldapcompare_fast(dn, attrvalue, second_value)
 
     def changePassword(self, user_dn, old_password, new_password):
-
         # Reset Password
         unicode_pass = unicode('\"' + str(new_password) + '\"', 'iso-8859-1')
         password_value = unicode_pass.encode('utf-16-le')
@@ -381,7 +368,8 @@ class Myldap(object):
 
 
 
-#Nop = Myldap('192.168.0.17', 'cn=administradortest,cn=Users,dc=owner,dc=local', '123456789Xx')
-#Nop.ldapmodify('cn=xD,cn=Users,dc=owner,dc=local', {'memberOf':'CN=Administradores,CN=Builtin,DC=owner,DC=local'})
+# Nop = Myldap('ownerpc.no-ip.org', 'cn=administradortest,cn=Users,dc=owner,dc=local', '123456789Xx')
+# print Nop.ldapsearch(search_by_mail('sruser@owner.local'), show_telephone_number())
+# Nop.ldapmodify('cn=sruser,cn=Users,dc=owner,dc=local', {'telephoneNumber':'9917'})
 #Nop.changePassword('cn=administradortest,cn=Users,dc=owner,dc=local','Mat@123123', '123456789Xx')
 #print Nop.ldapsearch(search_by_dn('cn=administradortest,cn=Users,dc=owner,dc=local'), show_dn())

@@ -10,7 +10,7 @@ Convert and Verify Functions
 def to_domain(dn):
     """
     to_domain(dn) -> String
-    this function convert dn with only domainComponent to domain
+    this function converts dn with only domainComponent to domain
     """
     import re
     dn = dn.split(',')
@@ -26,7 +26,7 @@ def to_domain(dn):
 def to_distinguished_name(domain_url):
     """
     to_distinguished_name(domain_url) -> String
-    this function convert domain to dn with only domainComponent
+    this function converts domain to dn with only domainComponent
     """
     domain_url = domain_url.split('.')
     dn = []
@@ -40,7 +40,7 @@ def to_distinguished_name(domain_url):
 def is_domain_dn(dn):
     """
     is_domain_dn(dn) -> boolean
-    this function verify if you dn is a dn with only domainComponent
+    this function verifies if you dn is a dn with only domainComponent
     """
     import re
     exp = r"((dc=[a-zA-Z0-9\-]+[\,]{1})+(dc=[a-zA-Z0-9\-]+)$)"
@@ -54,7 +54,7 @@ def is_domain_dn(dn):
 def is_domain_url(domain_url):
     """
     is_domain_url(domain_url) -> boolean
-    this function verify if is url
+    this function verifies if is url
     """
     import re
     www = re.compile(r"(([a-zA-Z0-9\-]+[\.]{1})+([a-zA-Z0-9\-]+)$)")
