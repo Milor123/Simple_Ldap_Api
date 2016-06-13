@@ -384,8 +384,8 @@ class Myldap(object):
         Examples:
             | Try delete a real object.
 
-            >>>dn = 'cn=object_to_delete,cn=Users,dc=owner,dc=local'
-            >>>auth_object.ldapdelete(dn)
+            >>> dn = 'cn=object_to_delete,cn=Users,dc=owner,dc=local'
+            >>> auth_object.ldapdelete(dn)
             'The object has been deleted.'
         """
 
