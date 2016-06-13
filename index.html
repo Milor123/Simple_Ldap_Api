@@ -1,0 +1,612 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Simple_Ldap_Api 1.0 &mdash; Simple_Ldap_Api 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Simple_Ldap_Api 1.0 documentation" href="#" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">Simple_Ldap_Api 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="simple-ldap-api-1-0">
+<h1>Simple_Ldap_Api 1.0<a class="headerlink" href="#simple-ldap-api-1-0" title="Permalink to this headline">¶</a></h1>
+<p>Contents:</p>
+<span class="target" id="module-Appl"></span><div class="section" id="requeriments">
+<h2>Requeriments<a class="headerlink" href="#requeriments" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">python</span> <span class="pre">2.7</span></code></li>
+<li><code class="docutils literal"><span class="pre">install</span> <span class="pre">libsasl2-dev</span> <span class="pre">python-dev</span> <span class="pre">libldap2-dev</span> <span class="pre">libssl-dev</span></code></li>
+<li><code class="docutils literal"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">python-ldap</span></code></li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="documentation">
+<h1>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="Appl.Myldap">
+<em class="property">class </em><code class="descclassname">Appl.</code><code class="descname">Myldap</code><span class="sig-paren">(</span><em>ip</em>, <em>dn</em>, <em>_password</em>, <em>port='389'</em><span class="sig-paren">)</span><a class="headerlink" href="#Appl.Myldap" title="Permalink to this definition">¶</a></dt>
+<dd><p>first of all, this module is specially created for active directory working of the university
+&#8220;Instituto Tolimense de Educacion Superior&#8221; (ITFIP). Our objective is to ease
+centralization of data through ldap protocol.</p>
+<p>This module establishes a connection to active directory, of Windows Server, by means of an user of domain,
+on top of that, allow data query, and other functions such as, add, modify, compare data</p>
+<dl class="docutils">
+<dt>Attributes:</dt>
+<dd><div class="first last line-block">
+<div class="line">conn (instance): instanced connection of ldap object.</div>
+<div class="line">domain (str): DN converted to domain with helpful method.</div>
+</div>
+</dd>
+</dl>
+<dl class="method">
+<dt id="Appl.Myldap.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>ip</em>, <em>dn</em>, <em>_password</em>, <em>port='389'</em><span class="sig-paren">)</span><a class="headerlink" href="#Appl.Myldap.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>In the constructor define the sensitive data for Active Directory connection, then call to _connect().</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><div class="first last line-block">
+<div class="line">ip (str): ip address.</div>
+<div class="line">dn (str): Distinguished Name.</div>
+<div class="line">_password (str): User password.</div>
+<div class="line">port (str): connection port.</div>
+</div>
+</dd>
+<dt>Attributes:</dt>
+<dd><div class="first line-block">
+<div class="line">ip (str): ip address of domain server.</div>
+<div class="line">dn (str): is a sequence of relative distinguished names (RDN) connected by commas, thus must contain
+administrator user locate and Domain.</div>
+<div class="line">_password (str): you must specify an adminstrator user of Domain in the Active Directory.</div>
+<div class="line">port (str): Active Directory Domain Services Port.</div>
+</div>
+<div class="last admonition seealso">
+<p class="first admonition-title">See also</p>
+<div class="line-block">
+<div class="line"><a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa366101%28v=vs.85%29.aspx">https://msdn.microsoft.com/en-us/library/windows/desktop/aa366101%28v=vs.85%29.aspx</a></div>
+</div>
+<p class="last"><a class="reference external" href="https://technet.microsoft.com/en-us/library/dd772723%28v=ws.10%29.aspx">https://technet.microsoft.com/en-us/library/dd772723%28v=ws.10%29.aspx</a></p>
+</div>
+</dd>
+<dt>Examples:</dt>
+<dd><p class="first">if the connection is valid this should print your user and domain.</p>
+<div class="last highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Myldap</span><span class="p">(</span><span class="s1">&#39;192.168.0.23&#39;</span><span class="p">,</span> <span class="s1">&#39;cn=administradortest,cn=Users,dc=owner,dc=local&#39;</span><span class="p">,</span><span class="s1">&#39;mypassword&#39;</span><span class="p">)</span>
+<span class="go">u:OWNERdministradortest</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Appl.Myldap._connect">
+<code class="descname">_connect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#Appl.Myldap._connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method will create an instanced object of ldap with authentified connection.</p>
+<dl class="docutils">
+<dt>Raises:</dt>
+<dd>Exception: Error in the authentication with server by some reason</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Appl.Myldap.changePassword">
+<code class="descname">changePassword</code><span class="sig-paren">(</span><em>user_dn</em>, <em>old_password</em>, <em>new_password</em><span class="sig-paren">)</span><a class="headerlink" href="#Appl.Myldap.changePassword" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dont use it, This code is experimental</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Appl.Myldap.getsearch">
+<code class="descname">getsearch</code><span class="sig-paren">(</span><em>self</em>, <em>_resultssearch</em>, <em>attrib_toshow</em><span class="sig-paren">)</span> &rarr; list<a class="headerlink" href="#Appl.Myldap.getsearch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Take the dictionary result of ldapsearch, and make reorganization in a list.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><div class="first last line-block">
+<div class="line">_resultssearch (dict): Iterable data.</div>
+<div class="line">attrib_toshow (list of str): Filter data according to attributes.</div>
+</div>
+</dd>
+<dt>Attributes:</dt>
+<dd><div class="first last line-block">
+<div class="line">_resultssearch (dict): It contains human readable data about search.</div>
+<div class="line">attrib_toshow (list): Use attributes with comma separate what you need to get.</div>
+</div>
+</dd>
+<dt>Returns:</dt>
+<dd><div class="first last line-block">
+<div class="line">_foundit(list): Filtered list of dict of _resultssearch.</div>
+</div>
+</dd>
+<dt>Raises:</dt>
+<dd><div class="first last line-block">
+<div class="line">LookupError: if it didn&#8217;t find something as a result of _resultssearch.</div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Appl.Myldap.ldapadd">
+<code class="descname">ldapadd</code><span class="sig-paren">(</span><em>objectdn</em>, <em>attrs_dict</em><span class="sig-paren">)</span><a class="headerlink" href="#Appl.Myldap.ldapadd" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function can add an object in Active Directory, which needs a DN and the attributes object</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><div class="first last line-block">
+<div class="line">objectdn (str): DistinguishedName for new object</div>
+<div class="line">attrs_dict: Dictionary with info object</div>
+</div>
+</dd>
+<dt>Raises:</dt>
+<dd><div class="first last line-block">
+<div class="line">ValueError: Object or user already exist</div>
+<div class="line">NameError: From my point of view, usually this is brought about of different information,
+which is specified in the dictionary and objectdn, in other words,
+if you cn in the DN isn&#8217;t same than cn in the dictionary, the error occurs</div>
+</div>
+</dd>
+<dt>Returns:</dt>
+<dd>Spanish message that shows, that the object has been created correctly</dd>
+<dt>Examples:</dt>
+<dd><div class="first line-block">
+<div class="line">Create a dict with data object:</div>
+</div>
+<div class="last highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">attrs</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;objectclass&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;top&#39;</span><span class="p">,</span> <span class="s1">&#39;organizationalPerson&#39;</span><span class="p">,</span> <span class="s1">&#39;Person&#39;</span><span class="p">,</span> <span class="s1">&#39;user&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;cn&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;userman&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;userPassword&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Secret&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;I am new user xDDD&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">auth_object</span><span class="o">.</span><span class="n">ldapadd</span><span class="p">(</span><span class="s1">&#39;cn=userman,cn=Users,dc=owner,dc=local&#39;</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
+<span class="go">The object has been created correctly</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Appl.Myldap.ldapcompar_advance">
+<code class="descname">ldapcompar_advance</code><span class="sig-paren">(</span><em>self</em>, <em>dn</em>, <em>attrvalue</em>, <em>dntocompare</em>, <em>attrvaluecompare</em><span class="sig-paren">)</span> &rarr; boolean or string<a class="headerlink" href="#Appl.Myldap.ldapcompar_advance" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method allows to compare two attribute values with DN.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>dn (str): Firts object DN to compare.
+attrvalue (str): Firts attribute to compare.
+dntocompare (str): Second object DN to compare.
+attrvaluecompare (str): Second attribute to compare.</dd>
+<dt>Returns:</dt>
+<dd><div class="first last line-block">
+<div class="line">Both are empty&#8217; if the values of Both attributes are empty.</div>
+<div class="line">True if the values are same.</div>
+<div class="line">False if the values no match.</div>
+</div>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<ul class="last simple">
+<li>Don&#8217;t use with attributes of multiple values as memberOf, could throw false positive.</li>
+<li>Don&#8217;t use spaces in DN, be sure to separate only by comma.</li>
+</ul>
+</div>
+<dl class="docutils">
+<dt>Examples:</dt>
+<dd><div class="first line-block">
+<div class="line">Phones numbers compare with different users.</div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">auth_object</span><span class="o">.</span><span class="n">compar_advance</span><span class="p">(</span><span class="s1">&#39;cn=xD,cn=Users,dc=owner,dc=local&#39;</span><span class="p">,</span><span class="s1">&#39;telephoneNumber&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                           <span class="s1">&#39;cn=administradortest,cn=Users,dc=owner,dc=local&#39;</span><span class="p">,</span><span class="s1">&#39;telephoneNumber&#39;</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">will use the same user. should be true or throw Both are empty if haven&#8217;t data.</div>
+</div>
+<div class="last highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">auth_object</span><span class="o">.</span><span class="n">compar_advance</span><span class="p">(</span><span class="s1">&#39;cn=xD,cn=Users,dc=owner,dc=local&#39;</span><span class="p">,</span><span class="s1">&#39;telephoneNumber&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                           <span class="s1">&#39;cn=xD,cn=Users,dc=owner,dc=local&#39;</span><span class="p">,</span><span class="s1">&#39;telephoneNumber&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Appl.Myldap.ldapcompare_fast">
+<code class="descname">ldapcompare_fast</code><span class="sig-paren">(</span><em>self</em>, <em>dn</em>, <em>attr</em>, <em>value</em><span class="sig-paren">)</span> &rarr; boolean<a class="headerlink" href="#Appl.Myldap.ldapcompare_fast" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Args:</dt>
+<dd><div class="first last line-block">
+<div class="line">dn (str): Object DN.</div>
+<div class="line">attr (str): Attribute to compare.</div>
+<div class="line">value (str): Value for compare.</div>
+</div>
+</dd>
+<dt>Returns:</dt>
+<dd><div class="first last line-block">
+<div class="line">True if the values are same.</div>
+<div class="line">False if the values no match.</div>
+</div>
+</dd>
+<dt>References:</dt>
+<dd><a class="reference external" href="https://www.packtpub.com/books/content/configuring-and-securing-python-ldap-applications-part-2">https://www.packtpub.com/books/content/configuring-and-securing-python-ldap-applications-part-2</a></dd>
+<dt>Examples:</dt>
+<dd><div class="first line-block">
+<div class="line">if the xD user have phoneNumver value = 11257.</div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">auth_object</span><span class="o">.</span><span class="n">ldapcompare_fast</span><span class="p">(</span><span class="s1">&#39;cn=xD,cn=Users,dc=owner,dc=local&#39;</span><span class="p">,</span><span class="s1">&#39;telephoneNumber&#39;</span><span class="p">,</span> <span class="s1">&#39;5559971&#39;</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="last highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">auth_object</span><span class="o">.</span><span class="n">ldapcompare_fast</span><span class="p">(</span><span class="s1">&#39;cn=xD,cn=Users,dc=owner,dc=local&#39;</span><span class="p">,</span><span class="s1">&#39;telephoneNumber&#39;</span><span class="p">,</span> <span class="s1">&#39;11257&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<ul class="last simple">
+<li>Don&#8217;t use with attributes of multiple values as memberOf, could throw false positive.</li>
+<li>Don&#8217;t use spaces in DN, be sure to separate only by comma.</li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="Appl.Myldap.ldapdelete">
+<code class="descname">ldapdelete</code><span class="sig-paren">(</span><em>self</em>, <em>dn</em><span class="sig-paren">)</span> &rarr; str<a class="headerlink" href="#Appl.Myldap.ldapdelete" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Args:</dt>
+<dd><div class="first last line-block">
+<div class="line">dn (str): Object DN.</div>
+</div>
+</dd>
+<dt>Raises:</dt>
+<dd><div class="first last line-block">
+<div class="line">Ldap Error if can&#8217;t deleted object.</div>
+</div>
+</dd>
+<dt>Returns:</dt>
+<dd><div class="first last line-block">
+<div class="line">Str if can deleted object</div>
+</div>
+</dd>
+<dt>References:</dt>
+<dd><a class="reference external" href="http://www.grotan.com/ldap/python-ldap-samples.html">http://www.grotan.com/ldap/python-ldap-samples.html</a></dd>
+<dt>Examples:</dt>
+<dd><div class="first line-block">
+<div class="line">Try delete a real object.</div>
+</div>
+<p class="last">&gt;&gt;&gt;dn = &#8216;cn=object_to_delete,cn=Users,dc=owner,dc=local&#8217;
+&gt;&gt;&gt;auth_object.ldapdelete(dn)
+&#8216;The object has been deleted.&#8217;</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Appl.Myldap.ldapmodify">
+<code class="descname">ldapmodify</code><span class="sig-paren">(</span><em>objectdn</em>, <em>attrs_new</em><span class="sig-paren">)</span><a class="headerlink" href="#Appl.Myldap.ldapmodify" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function can modify an object in Active Directory, taking an object and stipulate new data for attributes</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><div class="first last line-block">
+<div class="line">objectdn (str): DistinguishedName of object to modify</div>
+<div class="line">attrs_new (dict): Acive Directory Attributes dicctionary with value need for modify</div>
+</div>
+</dd>
+<dt>Examples:</dt>
+<dd><p class="first">go to change current telephoneNumber.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">auth_object</span><span class="o">.</span><span class="n">ldapmodify</span><span class="p">(</span><span class="s1">&#39;cn=administratortest,cn=Users,dc=owner,dc=local&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;telephoneNumber&#39;</span><span class="p">:</span> <span class="s1">&#39;515336&#39;</span><span class="p">})</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line">In this moment us number should be 515336.</div>
+<div class="line">could check this with:</div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">auth_object</span><span class="o">.</span><span class="n">ldapsearch</span><span class="p">(</span><span class="n">search_by_mail</span><span class="p">(</span><span class="s1">&#39;administradortest@owner.local&#39;</span><span class="p">),</span> <span class="n">show_telephone_number</span><span class="p">())</span>
+<span class="go">[[&#39;telephoneNumber&#39; [&#39;515336&#39;]]]</span>
+</pre></div>
+</div>
+<div class="last admonition warning">
+<p class="first admonition-title">Warning</p>
+<div class="line-block">
+<div class="line">Modify attributes with multiple data are experimental code, don&#8217;t use it</div>
+<div class="line">if you need add multiple data, use comma to separate in a list for the value, one example could be:</div>
+</div>
+<div class="last highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">auth_object</span><span class="o">.</span><span class="n">ldapmodify</span><span class="p">(</span><span class="s1">&#39;cn=administratortest...&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;memberOf&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Group_of_blabla&#39;</span><span class="p">,</span><span class="s1">&#39;blablabla&#39;</span><span class="p">,</span><span class="s1">&#39;More_blabla&#39;</span><span class="p">]})</span>
+</pre></div>
+</div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="Appl.Myldap.ldapsearch">
+<code class="descname">ldapsearch</code><span class="sig-paren">(</span><em>self</em>, <em>attrib_forsearch</em>, <em>attrib_toshow</em>, <em>**kwargs</em><span class="sig-paren">)</span> &rarr; list<a class="headerlink" href="#Appl.Myldap.ldapsearch" title="Permalink to this definition">¶</a></dt>
+<dd><p>This functions allow to get data list of an object in the active directory, based on a search of an information
+that then is filtered according to user&#8217;s needs.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><div class="first last line-block">
+<div class="line">attrib_forsearch (str): Attribute with value for search all data.</div>
+<div class="line">attrib_toshow (list of str): Filter data according to attributes.</div>
+<div class="line"><a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs: Domain if need be changed (optional).</div>
+</div>
+</dd>
+<dt>Attributes:</dt>
+<dd><div class="first line-block">
+<div class="line">attrib_forsearch (str): It&#8217;s composed by two importants parts.
+firts, the attribute of domain for try search, secondly, the value for searching all the data.</div>
+<div class="line">attrib_toshow (list): Use attributes with comma separate what you need to get.</div>
+<div class="line"><a href="#id3"><span class="problematic" id="id4">**</span></a>kwargs: It is used for changing default domain of search,
+you can use url as domain or distinguishedName, use domain=&#8217;dn_or_url&#8217;.</div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">in case of use <a href="#id5"><span class="problematic" id="id6">**</span></a>kwargs as domain with DN, don&#8217;t use spaces, be sure to separate only by commas</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">search_this and show_this module could help you</p>
+</div>
+<div class="last admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms675090(v=vs.85).aspx">https://msdn.microsoft.com/en-us/library/windows/desktop/ms675090(v=vs.85).aspx</a></p>
+</div>
+</dd>
+<dt>Returns:</dt>
+<dd>list from getsearch().</dd>
+<dt>Raises:</dt>
+<dd>SyntaxError: In case that your kwarg domain is corrupted.</dd>
+<dt>Examples:</dt>
+<dd><div class="first line-block">
+<div class="line">Should use authentified object of myldap and then try search:</div>
+<div class="line">Without help modules:</div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">auth_object</span><span class="o">.</span><span class="n">ldapsearch</span><span class="p">(</span><span class="s1">&#39;mail=mailfor@search.com&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;distinguishedName&#39;</span><span class="p">])</span>
+<span class="go">[[&#39;distinguishedName&#39;, [&#39;CN=name_user,CN=Users...&#39;]]]</span>
+</pre></div>
+</div>
+<p>Using show_this and search_this functions.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">auth_object</span><span class="o">.</span><span class="n">ldapsearch</span><span class="p">(</span><span class="n">search_by_mail</span><span class="p">(</span><span class="s1">&#39;mailfor@search.com&#39;</span><span class="p">),</span> <span class="n">show_dn</span><span class="p">())</span>
+<span class="go">[[&#39;distinguishedName&#39;, [&#39;CN=name_user,CN=Users...]]]</span>
+</pre></div>
+</div>
+<p>Incidentally we must not forget, this can find multiple values, to give an illustration of what I mean,
+will try to get a memberOf data in admintratortest:</p>
+<div class="last highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">auth_object</span><span class="o">.</span><span class="n">ldapsearch</span><span class="p">(</span><span class="n">search_by_mail</span><span class="p">(</span><span class="s1">&#39;administradortest@owner.local&#39;</span><span class="p">),</span> <span class="n">show_member_of</span><span class="p">())</span>
+<span class="go">[[&#39;memberOf&#39;, [&#39;CN=blabla ,CN=Users,DC=owner...&#39;, &#39;CN=Admins. blabla,CN=Users,DC=owner...&#39;, &#39;CN= blablabla,DC=owner,DC=local&#39;]]]</span>
+</pre></div>
+</div>
+</dd>
+<dt>Example attributes:</dt>
+<dd>auth_object refers to authenfied and instaced object, with administrator data</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-functions.decorators"></span><div class="section" id="decorators">
+<h2>Decorators<a class="headerlink" href="#decorators" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="functions.decorators.requiere">
+<code class="descclassname">functions.decorators.</code><code class="descname">requiere</code><span class="sig-paren">(</span><em>*types</em><span class="sig-paren">)</span><a class="headerlink" href="#functions.decorators.requiere" title="Permalink to this definition">¶</a></dt>
+<dd><p>This decorator, evaluates that the types pass in a method to be correct</p>
+</dd></dl>
+
+</div>
+<span class="target" id="module-functions.convert"></span><div class="section" id="convert-and-verify-functions">
+<h2>Convert and Verify Functions<a class="headerlink" href="#convert-and-verify-functions" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You should know about distinguished name (dn) and your structure</p>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference external" href="https://msdn.microsoft.com/en-us/library/aa366101(v=vs.85).aspx">https://msdn.microsoft.com/en-us/library/aa366101(v=vs.85).aspx</a></p>
+</div>
+<dl class="function">
+<dt id="functions.convert.is_domain_dn">
+<code class="descclassname">functions.convert.</code><code class="descname">is_domain_dn</code><span class="sig-paren">(</span><em>dn</em><span class="sig-paren">)</span> &rarr; boolean<a class="headerlink" href="#functions.convert.is_domain_dn" title="Permalink to this definition">¶</a></dt>
+<dd><p>this function verifies if you dn is a dn with only domainComponent</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="functions.convert.is_domain_url">
+<code class="descclassname">functions.convert.</code><code class="descname">is_domain_url</code><span class="sig-paren">(</span><em>domain_url</em><span class="sig-paren">)</span> &rarr; boolean<a class="headerlink" href="#functions.convert.is_domain_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>this function verifies if is url</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="functions.convert.to_distinguished_name">
+<code class="descclassname">functions.convert.</code><code class="descname">to_distinguished_name</code><span class="sig-paren">(</span><em>domain_url</em><span class="sig-paren">)</span> &rarr; String<a class="headerlink" href="#functions.convert.to_distinguished_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>this function converts domain to dn with only domainComponent</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="functions.convert.to_domain">
+<code class="descclassname">functions.convert.</code><code class="descname">to_domain</code><span class="sig-paren">(</span><em>dn</em><span class="sig-paren">)</span> &rarr; String<a class="headerlink" href="#functions.convert.to_domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>this function converts dn with only domainComponent to domain</p>
+</dd></dl>
+
+</div>
+<span class="target" id="module-functions.search_this"></span><div class="section" id="search-functions">
+<h2>Search Functions<a class="headerlink" href="#search-functions" title="Permalink to this headline">¶</a></h2>
+<p>Use this in ldapsearch Function</p>
+<dl class="function">
+<dt id="functions.search_this.search_by_dn">
+<code class="descclassname">functions.search_this.</code><code class="descname">search_by_dn</code><span class="sig-paren">(</span><em>dn</em><span class="sig-paren">)</span> &rarr; String<a class="headerlink" href="#functions.search_this.search_by_dn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="functions.search_this.search_by_mail">
+<code class="descclassname">functions.search_this.</code><code class="descname">search_by_mail</code><span class="sig-paren">(</span><em>mail</em><span class="sig-paren">)</span> &rarr; String<a class="headerlink" href="#functions.search_this.search_by_mail" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="functions.search_this.search_by_name">
+<code class="descclassname">functions.search_this.</code><code class="descname">search_by_name</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span> &rarr; String<a class="headerlink" href="#functions.search_this.search_by_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="functions.search_this.search_by_number">
+<code class="descclassname">functions.search_this.</code><code class="descname">search_by_number</code><span class="sig-paren">(</span><em>number</em><span class="sig-paren">)</span> &rarr; String<a class="headerlink" href="#functions.search_this.search_by_number" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<span class="target" id="module-functions.show_this"></span><div class="section" id="show-functions">
+<h2>Show Functions<a class="headerlink" href="#show-functions" title="Permalink to this headline">¶</a></h2>
+<p>Use this in ldapsearch Function</p>
+<dl class="function">
+<dt id="functions.show_this.show_dn">
+<code class="descclassname">functions.show_this.</code><code class="descname">show_dn</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; list<a class="headerlink" href="#functions.show_this.show_dn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="functions.show_this.show_mail">
+<code class="descclassname">functions.show_this.</code><code class="descname">show_mail</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; list<a class="headerlink" href="#functions.show_this.show_mail" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="functions.show_this.show_member_of">
+<code class="descclassname">functions.show_this.</code><code class="descname">show_member_of</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; list<a class="headerlink" href="#functions.show_this.show_member_of" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="functions.show_this.show_name">
+<code class="descclassname">functions.show_this.</code><code class="descname">show_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; list<a class="headerlink" href="#functions.show_this.show_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="functions.show_this.show_password">
+<code class="descclassname">functions.show_this.</code><code class="descname">show_password</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; list<a class="headerlink" href="#functions.show_this.show_password" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="functions.show_this.show_profile">
+<code class="descclassname">functions.show_this.</code><code class="descname">show_profile</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; list<a class="headerlink" href="#functions.show_this.show_profile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="functions.show_this.show_sensitive_data">
+<code class="descclassname">functions.show_this.</code><code class="descname">show_sensitive_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; list<a class="headerlink" href="#functions.show_this.show_sensitive_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="functions.show_this.show_telephone_number">
+<code class="descclassname">functions.show_this.</code><code class="descname">show_telephone_number</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; list<a class="headerlink" href="#functions.show_this.show_telephone_number" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span>Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span>Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span>Search Page</span></a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Simple_Ldap_Api 1.0</a><ul>
+<li><a class="reference internal" href="#requeriments">Requeriments</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#documentation">Documentation</a><ul>
+<li><a class="reference internal" href="#decorators">Decorators</a></li>
+<li><a class="reference internal" href="#convert-and-verify-functions">Convert and Verify Functions</a></li>
+<li><a class="reference internal" href="#search-functions">Search Functions</a></li>
+<li><a class="reference internal" href="#show-functions">Show Functions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">Simple_Ldap_Api 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Mateo Bohorquez.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>
