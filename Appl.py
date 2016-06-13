@@ -121,7 +121,7 @@ class Myldap(object):
             >>> auth_object.ldapsearch('mail=mailfor@search.com', ['distinguishedName'])
             [['distinguishedName', ['CN=name_user,CN=Users...']]]
 
-            With show_this and search_this functions.
+            Using show_this and search_this functions.
 
             >>> auth_object.ldapsearch(search_by_mail('mailfor@search.com'), show_dn())
             [['distinguishedName', ['CN=name_user,CN=Users...]]]
@@ -133,7 +133,7 @@ class Myldap(object):
             [['memberOf', ['CN=blabla ,CN=Users,DC=owner...', 'CN=Admins. blabla,CN=Users,DC=owner...', 'CN= blablabla,DC=owner,DC=local']]]
 
         Example attributes:
-            auth_object(Instance): refers to authenfied instace with administrator data
+            auth_object refers to authenfied and instaced object, with administrator data
         """
 
         try:
@@ -355,6 +355,7 @@ class Myldap(object):
         return self.ldapcompare_fast(dn, attrvalue, second_value)
 
     def changePassword(self, user_dn, old_password, new_password):
+        """ Dont use it, This code is experimental """
         # Reset Password
         unicode_pass = unicode('\"' + str(new_password) + '\"', 'iso-8859-1')
         password_value = unicode_pass.encode('utf-16-le')
@@ -365,10 +366,38 @@ class Myldap(object):
         # Its nice to the server to disconnect and free resources when done
         #.unbind_s()
 
+    def ldapdelete(self, dn):
+        """
+        ldapdelete(self, dn) -> str
+
+        Args:
+            | dn (str): Object DN.
+
+        Raises:
+            | Ldap Error if can't deleted object.
+
+        Returns:
+            | Str if can deleted object
+
+        References:
+            http://www.grotan.com/ldap/python-ldap-samples.html
+        Examples:
+            | Try delete a real object.
+
+            >>>dn = 'cn=object_to_delete,cn=Users,dc=owner,dc=local'
+            >>>auth_object.ldapdelete(dn)
+            'The object has been deleted.'
+        """
+
+        try:
+            self.conn.delete_s(dn)
+            return 'The object has been deleted.'
+        except ldap.LDAPError, e:
+            print 'Cant delete DN, detais:',e
 
 
 
-# Nop = Myldap('ownerpc.no-ip.org', 'cn=administradortest,cn=Users,dc=owner,dc=local', '123456789Xx')
+#Nop = Myldap('192.168.0.23', 'cn=administrador,cn=Users,dc=owner,dc=local', 'passwordxD')
 # print Nop.ldapsearch(search_by_mail('sruser@owner.local'), show_telephone_number())
 # Nop.ldapmodify('cn=sruser,cn=Users,dc=owner,dc=local', {'telephoneNumber':'9917'})
 #Nop.changePassword('cn=administradortest,cn=Users,dc=owner,dc=local','Mat@123123', '123456789Xx')
