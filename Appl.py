@@ -430,18 +430,7 @@ class Myldap(object):
 
 
 
-attrs = {}
-attrs['objectclass'] = ['top', 'person', 'organizationalPerson','user']
-attrs['cn'] = 'jjones'
-attrs['userPassword'] = 'jimbo'
-attrs['userPrincipalName'] = 'jjones'
-attrs['sAMAccountName'] = 'jjones'
-attrs['givenName'] = 'Jimbo'
-attrs['sn'] = 'Jones'
-attrs['DisplayName'] = 'Jimbo Jones'
-attrs['description'] = 'A brief description'
-#attrs['userAccountControl'] = '512'
-Nop = Myldap('192.168.0.23', 'cn=administrador,cn=Users,dc=owner,dc=local', 'Mat@#123123..',ssl=True)
+Nop = Myldap('192.168.0.23', 'cn=administrador,cn=Users,dc=owner,dc=local', 'PasswordxDDDD',ssl=True)
 Nop.ldapadd_user('cn=loled3,cn=Users,dc=owner,dc=local','loled3','Control01+')
 # print Nop.ldapsearch(search_by_mail('sruser@owner.local'), show_telephone_number())
 # Nop.ldapmodify('cn=sruser,cn=Users,dc=owner,dc=local', {'telephoneNumber':'9917'})
