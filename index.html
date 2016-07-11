@@ -62,7 +62,7 @@
 <h1>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="Appl.Myldap">
-<em class="property">class </em><code class="descclassname">Appl.</code><code class="descname">Myldap</code><span class="sig-paren">(</span><em>ip</em>, <em>dn</em>, <em>_password</em>, <em>port='389'</em><span class="sig-paren">)</span><a class="headerlink" href="#Appl.Myldap" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">Appl.</code><code class="descname">Myldap</code><span class="sig-paren">(</span><em>ip</em>, <em>dn</em>, <em>_password</em>, <em>port='389'</em>, <em>ssl=False</em><span class="sig-paren">)</span><a class="headerlink" href="#Appl.Myldap" title="Permalink to this definition">¶</a></dt>
 <dd><p>first of all, this module is specially created for active directory working of the university
 &#8220;Instituto Tolimense de Educacion Superior&#8221; (ITFIP). Our objective is to ease
 centralization of data through ldap protocol.</p>
@@ -78,7 +78,7 @@ on top of that, allow data query, and other functions such as, add, modify, comp
 </dl>
 <dl class="method">
 <dt id="Appl.Myldap.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>ip</em>, <em>dn</em>, <em>_password</em>, <em>port='389'</em><span class="sig-paren">)</span><a class="headerlink" href="#Appl.Myldap.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>ip</em>, <em>dn</em>, <em>_password</em>, <em>port='389'</em>, <em>ssl=False</em><span class="sig-paren">)</span><a class="headerlink" href="#Appl.Myldap.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>In the constructor define the sensitive data for Active Directory connection, then call to _connect().</p>
 <dl class="docutils">
 <dt>Args:</dt>
@@ -123,12 +123,6 @@ administrator user locate and Domain.</div>
 <dt>Raises:</dt>
 <dd>Exception: Error in the authentication with server by some reason</dd>
 </dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="Appl.Myldap.changePassword">
-<code class="descname">changePassword</code><span class="sig-paren">(</span><em>user_dn</em>, <em>old_password</em>, <em>new_password</em><span class="sig-paren">)</span><a class="headerlink" href="#Appl.Myldap.changePassword" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dont use it, This code is experimental</p>
 </dd></dl>
 
 <dl class="method">
@@ -313,9 +307,11 @@ attrvaluecompare (str): Second attribute to compare.</dd>
 <dd><div class="first line-block">
 <div class="line">Try delete a real object.</div>
 </div>
-<p class="last">&gt;&gt;&gt;dn = &#8216;cn=object_to_delete,cn=Users,dc=owner,dc=local&#8217;
-&gt;&gt;&gt;auth_object.ldapdelete(dn)
-&#8216;The object has been deleted.&#8217;</p>
+<div class="last highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dn</span> <span class="o">=</span> <span class="s1">&#39;cn=object_to_delete,cn=Users,dc=owner,dc=local&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">auth_object</span><span class="o">.</span><span class="n">ldapdelete</span><span class="p">(</span><span class="n">dn</span><span class="p">)</span>
+<span class="go">&#39;The object has been deleted.&#39;</span>
+</pre></div>
+</div>
 </dd>
 </dl>
 </dd></dl>
