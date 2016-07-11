@@ -32,7 +32,7 @@ class Myldap(object):
         | domain (str): DN converted to domain with helpful method.
     """
 
-    def __init__(self, ip, dn, _password, port='389'):
+    def __init__(self, ip, dn, _password, port='389', ssl=False):
         """
         In the constructor define the sensitive data for Active Directory connection, then call to _connect().
 
@@ -66,6 +66,7 @@ class Myldap(object):
         self.port = port
         self.domain = to_domain(dn)
         self.base = dn
+        self.ssl = ssl
         self._connect()
 
     def _connect(self):
@@ -76,12 +77,24 @@ class Myldap(object):
             Exception: Error in the authentication with server by some reason
 
         """
-
-        self.conn = ldap.initialize("ldap://"+self.ip+":"+self.port)
-
+        if not self.ssl:
+            self.conn = ldap.initialize("ldap://"+self.ip+":"+self.port)
+        else:
+            print 'xxxxxxxxxxxx'
+            if self.port == '389':
+                self.port = '636'
+            import os
+            ldap.set_option(ldap.OPT_X_TLS_REQUIRE_CERT, ldap.OPT_X_TLS_NEVER)
+            self.conn = ldap.initialize("ldaps://"+self.ip+":"+self.port)
+            self.conn.set_option(ldap.OPT_REFERRALS, 0)
+            self.conn.set_option(ldap.OPT_PROTOCOL_VERSION, 3)
+            self.conn.set_option(ldap.OPT_X_TLS_CACERTFILE, os.getcwd()+"/cacert.pem")
+            self.conn.set_option(ldap.OPT_X_TLS,ldap.OPT_X_TLS_DEMAND)
+            self.conn.set_option( ldap.OPT_X_TLS_DEMAND, True )
+            self.conn.set_option( ldap.OPT_DEBUG_LEVEL, 255 )
         try:
             time.sleep(0.5)
-            self.conn.simple_bind(self.dn, self._password)  # simple bind changed
+            self.conn.simple_bind_s(self.dn, self._password)  # simple bind changed
             print self.conn.whoami_s()
         except:
             raise Exception('Error al conectar con el servidor')
@@ -354,18 +367,6 @@ class Myldap(object):
             second_value = ''
         return self.ldapcompare_fast(dn, attrvalue, second_value)
 
-    def changePassword(self, user_dn, old_password, new_password):
-        """ Dont use it, This code is experimental """
-        # Reset Password
-        unicode_pass = unicode('\"' + str(new_password) + '\"', 'iso-8859-1')
-        password_value = unicode_pass.encode('utf-16-le')
-        add_pass = [(ldap.MOD_REPLACE, 'unicodePwd', [password_value])]
-
-        self.conn.modify_s(user_dn, add_pass)
-
-        # Its nice to the server to disconnect and free resources when done
-        #.unbind_s()
-
     def ldapdelete(self, dn):
         """
         ldapdelete(self, dn) -> str
@@ -395,9 +396,53 @@ class Myldap(object):
         except ldap.LDAPError, e:
             print 'Cant delete DN, detais:',e
 
+    def ldapchange_password(self,userdn, newpassword):
+        PASSWORD_ATTR = "unicodePwd"
+        unicode_pass = unicode("\"" + newpassword + "\"", "iso-8859-1")
+        password_value = unicode_pass.encode("utf-16-le")
+        add_pass = [(ldap.MOD_REPLACE, PASSWORD_ATTR, [password_value])]
+        self.conn.modify_s(userdn, add_pass)
+
+    def ldapadd_user(self, dn, username, password):
+        attrs = {}
+        attrs['objectclass'] = ['top', 'person', 'organizationalPerson','user']
+        attrs['cn'] = username
+        # Generate password
+        unicode_pass = unicode("\"" + password + "\"", "iso-8859-1")
+        password_value = unicode_pass.encode("utf-16-le")
+        # End Generate password
+        attrs['unicodePwd'] = password_value
+        attrs['userPrincipalName'] = username
+        attrs['sAMAccountName'] = username
+        attrs['givenName'] = username
+        attrs['sn'] = username
+        attrs['DisplayName'] = username
+        attrs['description'] = 'user added by simple ldap api'
+        attrs['userAccountControl'] = '512' # Enabled user... or 514 ofr Disabled User, 512 only work if you set the unicodePwd
+        ldif = modlist.addModlist(attrs)  # convert dict with special parse of ldap
+        try:
+            self.conn.add_s(dn, ldif)
+            return 'El objeto ha sido creado correctamente'
+        except ldap.ALREADY_EXISTS as e:
+            raise ValueError('El objeto ya existe ::', e)
+        except ldap.INVALID_DN_SYNTAX as e:
+            raise NameError('Puede que hayas espeficiado un objeto diferente en el diccionario que en el DN ::', e)
 
 
-#Nop = Myldap('192.168.0.23', 'cn=administrador,cn=Users,dc=owner,dc=local', 'passwordxD')
+
+attrs = {}
+attrs['objectclass'] = ['top', 'person', 'organizationalPerson','user']
+attrs['cn'] = 'jjones'
+attrs['userPassword'] = 'jimbo'
+attrs['userPrincipalName'] = 'jjones'
+attrs['sAMAccountName'] = 'jjones'
+attrs['givenName'] = 'Jimbo'
+attrs['sn'] = 'Jones'
+attrs['DisplayName'] = 'Jimbo Jones'
+attrs['description'] = 'A brief description'
+#attrs['userAccountControl'] = '512'
+Nop = Myldap('192.168.0.23', 'cn=administrador,cn=Users,dc=owner,dc=local', 'Mat@#123123..',ssl=True)
+Nop.ldapadd_user('cn=loled3,cn=Users,dc=owner,dc=local','loled3','Control01+')
 # print Nop.ldapsearch(search_by_mail('sruser@owner.local'), show_telephone_number())
 # Nop.ldapmodify('cn=sruser,cn=Users,dc=owner,dc=local', {'telephoneNumber':'9917'})
 #Nop.changePassword('cn=administradortest,cn=Users,dc=owner,dc=local','Mat@123123', '123456789Xx')
