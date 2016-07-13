@@ -541,6 +541,65 @@ will try to get a memberOf data in admintratortest:</p>
 <li><a class="reference internal" href="search.html"><span>Search Page</span></a></li>
 </ul>
 </div>
+<div class="section" id="uso-y-ejemplos-spanish">
+<h1>Uso y Ejemplos (Spanish)<a class="headerlink" href="#uso-y-ejemplos-spanish" title="Permalink to this headline">¶</a></h1>
+<p>En primera medida para hacer uso del LDAP API, se debe tener acceso a un usuario del directorio activo que poseea
+los permisos y caracteristicas suficientes para llevar a cabo la labor que se desea realizar,</p>
+<div class="section" id="autentificacion">
+<h2>Autentificacion<a class="headerlink" href="#autentificacion" title="Permalink to this headline">¶</a></h2>
+<p>De manera que debemos instanciar Myldap, ilustrese con el siguiente ejemplo:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Nop</span> <span class="o">=</span> <span class="n">Myldap</span><span class="p">(</span><span class="s1">&#39;192.168.0.23&#39;</span><span class="p">,</span> <span class="s1">&#39;cn=UsuarioConPermisos,cn=Users,dc=ITFIP,dc=LOCAL&#39;</span><span class="p">,</span><span class="s1">&#39;mypassword&#39;</span><span class="p">)</span>
+<span class="go"># Aqui deberia retornarnos el usuario o un error.</span>
+</pre></div>
+</div>
+<p>o en caso querer hacer modificaciones de datos muy sensibles (contrasenas, permisos especiales, nuevos usuarios, etc.)</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Nop</span> <span class="o">=</span> <span class="n">Myldap</span><span class="p">(</span><span class="s1">&#39;192.168.0.23&#39;</span><span class="p">,</span> <span class="s1">&#39;cn=UsuarioConPermisos,cn=Users,dc=ITFIP,dc=LOCAL&#39;</span><span class="p">,</span><span class="s1">&#39;mypassword&#39;</span><span class="p">,</span> <span class="n">ssl</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="c1"># Habilitando el ssl</span>
+<span class="go"># Aqui deberia retornarnos el usuario o un error.</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Para hacer uso de esto debe conocer la estructura <cite>DN</cite>, lea porfavor esto <a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa366101%28v=vs.85%29.aspx">https://msdn.microsoft.com/en-us/library/windows/desktop/aa366101%28v=vs.85%29.aspx</a></p>
+</div>
+</div>
+<div class="section" id="hacer-uso-de-alguna-funcion">
+<h2>Hacer uso de alguna funcion<a class="headerlink" href="#hacer-uso-de-alguna-funcion" title="Permalink to this headline">¶</a></h2>
+<p>La mas comun de ellas es la de agregar usuario que puedan autentificarse.</p>
+<p>Usando la Instancia <cite>Nop</cite> por ejemplo, ejecutamos la funcion para agregar un usuario, asi:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Nop</span><span class="o">.</span><span class="n">ldapadd_user</span><span class="p">(</span><span class="s1">&#39;cn=Nuevo_Usuario,cn=Users,dc=ITFIP,dc=local&#39;</span><span class="p">,</span><span class="s1">&#39;Nuevo_Usuario&#39;</span><span class="p">,</span><span class="s1">&#39;Contrasena_01_Compleja+&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">El usuario debe tener una contrasena compleja, y la sentencia cn=nombre debe ser igual al usuario.</p>
+</div>
+<p><br /></p>
+<p>Si va a  modificar informacion del usuario, un ejemplo seria:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Nop</span><span class="o">.</span><span class="n">ldapmodify</span><span class="p">(</span><span class="s1">&#39;cn=Nuevo_Usuario,cn=Users,dc=ITFIP,dc=local&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;telephoneNumber&#39;</span><span class="p">:</span> <span class="s1">&#39;515336&#39;</span><span class="p">})</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">La sentencia <strong>telephoneNumber</strong> es un atributo del usuario, propio del directorio activo, que hace referencia a el numero de telefono, asi como este hay muchos atributos mas.</p>
+</div>
+<p><br /></p>
+<p>Podemos tambien consultar cualquier clase de dato, verificaremos si fue modificado, de la siguiente forma.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Nop</span><span class="o">.</span><span class="n">ldapsearch</span><span class="p">(</span><span class="s1">&#39;mail=mailfor@search.com&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;telephoneNumber&#39;</span><span class="p">])</span> <span class="c1"># Ingresando manualmente los attributos</span>
+<span class="go"># aqui deberia retornar una sentencia de la forma [&#39;AttributoBuscado&#39;, [&#39;Valores_Encontrados&#39;]]] o un error</span>
+</pre></div>
+</div>
+<p>o usando las funciones agiles integrades en el API,</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Nop</span><span class="o">.</span><span class="n">ldapsearch</span><span class="p">(</span><span class="n">search_by_mail</span><span class="p">(</span><span class="s1">&#39;mailfor@search.com&#39;</span><span class="p">),</span> <span class="n">show_telephone_number</span><span class="p">())</span> <span class="c1"># Con las funciones</span>
+<span class="go"># aqui deberia retornar una sentencia de la forma [&#39;AttributoBuscado&#39;, [&#39;Valores_Encontrados&#39;]]] o un error</span>
+</pre></div>
+</div>
+<p>Ahora si queremos eliminar el usuario, seria asi:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Nop</span><span class="o">.</span><span class="n">ldapdelete</span><span class="p">(</span><span class="s1">&#39;cn=Nuevo_Usuario,cn=Users,dc=ITFIP,dc=local&#39;</span><span class="p">)</span>
+<span class="go"># Deberia retornar un mensaje diciendo que el usuario fue borrado o un error.</span>
+</pre></div>
+</div>
+</div>
+</div>
 
 
           </div>
@@ -562,6 +621,11 @@ will try to get a memberOf data in admintratortest:</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+<li><a class="reference internal" href="#uso-y-ejemplos-spanish">Uso y Ejemplos (Spanish)</a><ul>
+<li><a class="reference internal" href="#autentificacion">Autentificacion</a></li>
+<li><a class="reference internal" href="#hacer-uso-de-alguna-funcion">Hacer uso de alguna funcion</a></li>
+</ul>
+</li>
 </ul>
 
   <div role="note" aria-label="source link">
