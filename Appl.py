@@ -430,8 +430,8 @@ class Myldap(object):
 
 
 
-Nop = Myldap('192.168.0.23', 'cn=administrador,cn=Users,dc=owner,dc=local', 'PasswordxDDDD',ssl=True)
-Nop.ldapadd_user('cn=loled3,cn=Users,dc=owner,dc=local','loled3','Control01+')
+#Nop = Myldap('192.168.0.23', 'cn=administrador,cn=Users,dc=owner,dc=local', 'PasswordxDDDD',ssl=True)
+#Nop.ldapadd_user('cn=loled3,cn=Users,dc=owner,dc=local','loled3','Control01+')
 # print Nop.ldapsearch(search_by_mail('sruser@owner.local'), show_telephone_number())
 # Nop.ldapmodify('cn=sruser,cn=Users,dc=owner,dc=local', {'telephoneNumber':'9917'})
 #Nop.changePassword('cn=administradortest,cn=Users,dc=owner,dc=local','Mat@123123', '123456789Xx')
